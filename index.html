@@ -39,6 +39,7 @@
 
 
 
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>ShopWorx1 Fab</title>
@@ -11436,10 +11437,318 @@ body.light [style*="rgba(107,122,159,.1)"],body.light [style*="rgba(107,122,159,
 
 
 </style>
+
+<style>
+
+
+
+
+
+
+/* ── Base reset ─────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:#0f1117;color:#e2e8f0}
+#root{height:100%;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2a3048;border-radius:2px}
+/* ── Layout ─────────────────────────────────────────────────────── */
+.shell{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;flex-shrink:0;background:#181c27;border-right:0.5px solid #2a3048;display:flex;flex-direction:column}
+.sidebar-logo{padding:18px 20px 14px;border-bottom:0.5px solid #2a3048}
+.sidebar-logo h1{font-size:15px;font-weight:600;color:#e2e8f0;letter-spacing:-0.02em}
+.sidebar-logo p{font-size:11px;color:#6b7a9f;margin-top:2px}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 10pxflex:1;overflow-y:auto;}
+.nav-section{font-size:10px;color:#6b7a9f;text-transform:uppercase;letter-spacing:.08em;padding:10px 10px 4px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;color:#6b7a9f;cursor:pointer;margin-bottom:1px;transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.nav-item:hover{color:#e2e8f0;background:#1e2333}
+.nav-item.active{background:rgba(59,126,255,.15);color:#3b7eff;font-weight:500}
+.nav-badge{margin-left:auto;background:rgba(239,68,68,.2);color:#f87171;font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.mobile-bar{display:none;align-items:center;gap:12px;padding:12px 16px;border-bottom:0.5px solid #2a3048;background:#181c27}
+.mobile-bar span{font-size:14px;font-weight:500}
+.menu-btn{background:none;border:none;color:#6b7a9f;cursor:pointer;padding:4px;border-radius:6px;display:flex;flex-shrink:0}
+.page{flex:1;overflow-y:auto;padding:20px 24px}
+.overlay{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6)}
+.overlay.open{display:flex}
+.drawer{width:260px;background:#181c27;border-right:0.5px solid #2a3048;display:flex;flex-direction:column;position:relative;z-index:1}
+/* ── Cards ─────────────────────────────────────────────────────── */
+.card{background:#1e2333;border:0.5px solid #2a3048;border-radius:12px}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:0.5px solid #2a3048;flex-wrap:wrap;gap:8px}
+.card-title{font-size:13px;font-weight:600;color:#e2e8f0;display:flex;align-items:center;gap:6px}
+.card-link{font-size:11px;color:#3b7eff;cursor:pointer;background:none;border:none;font-family:inherit}
+/* ── Metrics ────────────────────────────────────────────────────── */
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.metric{background:#181c27;border:0.5px solid #2a3048;border-radius:8px;padding:14px 16px}
+.metric.clickable{cursor:pointer;transition:border .15s}
+.metric.clickable:hover{border-color:rgba(59,126,255,.5)}
+.metric-label{font-size:11px;color:#6b7a9f;margin-bottom:6px}
+.metric-value{font-size:26px;font-weight:600;color:#e2e8f0;line-height:1}
+.metric-sub{font-size:11px;color:#6b7a9f;margin-top:4px}
+.metric-sub.warn{color:#f59e0b}.metric-sub.danger{color:#ef4444}
+.grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:16px}
+/* ── Rows ───────────────────────────────────────────────────────── */
+.divide-row,.row{border-bottom:0.5px solid #2a3048;display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s}
+.divide-row:last-child,.row:last-child{border-bottom:none}
+.divide-row:hover,.row:hover{background:rgba(255,255,255,.03)}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-green{background:#22c55e}.dot-amber{background:#f59e0b}.dot-red{background:#ef4444}.dot-gray{background:#6b7a9f}
+/* ── Badges ─────────────────────────────────────────────────────── */
+.badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;display:inline-block;white-space:nowrap}
+.b-urgent{background:rgba(239,68,68,.2);color:#f87171}.b-high{background:rgba(245,158,11,.2);color:#fbbf24}
+.b-normal{background:rgba(59,126,255,.2);color:#60a5fa}.b-low{background:rgba(107,122,159,.2);color:#94a3b8}
+.b-open{background:rgba(245,158,11,.2);color:#fbbf24}.b-in_progress{background:rgba(59,126,255,.2);color:#60a5fa}
+.b-on_hold{background:rgba(107,122,159,.2);color:#94a3b8}.b-completed{background:rgba(34,197,94,.2);color:#4ade80}
+.b-cancelled{background:rgba(239,68,68,.2);color:#f87171}.b-active{background:rgba(34,197,94,.2);color:#4ade80}
+.b-in_shop{background:rgba(245,158,11,.2);color:#fbbf24}.b-down{background:rgba(239,68,68,.2);color:#f87171}
+.b-retired{background:rgba(107,122,159,.2);color:#94a3b8}
+/* ── Buttons ────────────────────────────────────────────────────── */
+.btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:inherit;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:none}
+.btn-primary,.btn-p{background:#3b7eff;color:#fff;border:none}.btn-primary:hover,.btn-p:hover{background:#5a94ff}
+.btn-primary:disabled,.btn-p:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost,.btn-g{background:transparent;color:#94a3b8;border:0.5px solid #2a3048}.btn-ghost:hover,.btn-g:hover{background:#1e2333;color:#e2e8f0}
+.btn-danger,.btn-d{background:transparent;color:#f87171;border:0.5px solid rgba(239,68,68,.3)}.btn-danger:hover,.btn-d:hover{background:rgba(239,68,68,.1)}
+.btn-success,.btn-s{background:rgba(34,197,94,.12);color:#4ade80;border:0.5px solid rgba(34,197,94,.3)}.btn-success:hover,.btn-s:hover{background:rgba(34,197,94,.22)}
+.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn-icon,.icon-btn{background:none;border:none;color:#6b7a9f;cursor:pointer;padding:4px;border-radius:6px;display:flex;transition:color .15s}
+.btn-icon:hover,.icon-btn:hover{color:#e2e8f0}
+/* ── Forms ──────────────────────────────────────────────────────── */
+.form-group,.fg{margin-bottom:14px}
+.form-label,.fl{display:block;font-size:11px;color:#6b7a9f;margin-bottom:5px;font-weight:500}
+.form-input,.form-select,.form-textarea,.fi,.fsel,.fta{width:100%;background:#181c27;border:0.5px solid #2a3048;border-radius:8px;padding:8px 12px;font-size:13px;color:#e2e8f0;font-family:inherit;transition:border .15s;outline:none;-webkit-appearance:none;appearance:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus,.fi:focus,.fsel:focus,.fta:focus{border-color:#3b7eff}
+.form-input::placeholder,.fi::placeholder{color:#6b7a9f}
+.form-textarea,.fta{resize:vertical}
+.form-select,.fsel{cursor:pointer}
+.form-grid,.fg{display:grid;gap:12px}
+.form-grid-2,.fg2{grid-template-columns:1fr 1fr}.form-grid-3,.fg3{grid-template-columns:1fr 1fr 1fr}
+.form-grid-4,.fg4{grid-template-columns:1fr 1fr 1fr 1fr}
+.error-box,.ebox{background:rgba(239,68,68,.1);border:0.5px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;color:#f87171;font-size:13px;margin-bottom:14px}
+.success-box{background:rgba(34,197,94,.1);border:0.5px solid rgba(34,197,94,.3);border-radius:8px;padding:10px 14px;color:#4ade80;font-size:13px;margin-bottom:14px}
+/* ── Page header ─────────────────────────────────────────────────── */
+.page-header,.phdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.page-header h2,.phdr h2{font-size:18px;font-weight:600;color:#e2e8f0}
+.page-header p,.phdr p{font-size:12px;color:#6b7a9f;margin-top:2px}
+/* ── Tables ──────────────────────────────────────────────────────── */
+.table-wrap,.tw{overflow-x:auto}
+table{width:100%;font-size:13px;border-collapse:collapse}
+th{text-align:left;font-size:11px;font-weight:500;color:#6b7a9f;padding:10px 16px;border-bottom:0.5px solid #2a3048}
+td{padding:10px 16px;border-bottom:0.5px solid #2a3048;color:#e2e8f0}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;color:#6b7a9f}
+/* ── Alerts ──────────────────────────────────────────────────────── */
+.alert{display:flex;align-items:center;gap:10px;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px}
+.alert-danger,.alert-d{background:rgba(239,68,68,.1);border:0.5px solid rgba(239,68,68,.3);color:#fca5a5}
+.alert-warn,.alert-w{background:rgba(245,158,11,.1);border:0.5px solid rgba(245,158,11,.3);color:#fcd34d}
+/* ── Filters ─────────────────────────────────────────────────────── */
+.filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.search-wrap,.sw{position:relative;flex:1;min-width:180px}
+.search-wrap svg,.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#6b7a9f;pointer-events:none}
+.search-input,.si{padding-left:34px !important}
+/* ── Modals ──────────────────────────────────────────────────────── */
+.modal-overlay,.moverlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:640px){.modal-overlay,.moverlay{align-items:center}}
+.modal{background:#1e2333;border:0.5px solid #2a3048;border-radius:16px 16px 0 0;width:100%;max-width:560px;padding:20px;max-height:90vh;overflow-y:auto}
+@media(min-width:640px){.modal{border-radius:16px}}
+.modal-wide,.mw{max-width:700px}
+.modal h3{font-size:16px;font-weight:500;color:#e2e8f0;margin-bottom:16px}
+/* ── Asset cards ─────────────────────────────────────────────────── */
+.asset-grid,.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.asset-card,.acard{background:#1e2333;border:0.5px solid #2a3048;border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s}
+.asset-card:hover,.acard:hover{border-color:rgba(59,126,255,.4)}
+/* ── Tabs ────────────────────────────────────────────────────────── */
+.tabs{display:flex;gap:2px;background:#181c27;border-radius:10px;padding:4px;overflow-x:auto;margin-bottom:16px}
+.tab{padding:6px 14px;border-radius:7px;font-size:13px;color:#6b7a9f;cursor:pointer;border:none;background:none;transition:all .15s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.tab.on,.tab.active{background:#1e2333;color:#e2e8f0;font-weight:500}
+/* ── Misc ────────────────────────────────────────────────────────── */
+.avatar,.av{width:40px;height:40px;border-radius:50%;background:rgba(59,126,255,.2);color:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.workload-info{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.workload-bar-bg{height:6px;background:#181c27;border-radius:3px}
+.workload-bar{height:6px;background:#3b7eff;border-radius:3px;transition:width .3s}
+.detail-grid,.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.detail-field label,.df label{font-size:11px;color:#6b7a9f;display:block;margin-bottom:2px}
+.detail-field p,.df p{font-size:13px;color:#e2e8f0}
+.back-btn,.back{background:none;border:none;color:#6b7a9f;cursor:pointer;padding:4px;border-radius:6px;display:flex;flex-shrink:0}
+.back-btn:hover,.back:hover{color:#e2e8f0}
+.quick-grid,.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.quick-btn,.qbtn{text-align:left;padding:12px;border-radius:10px;border:0.5px solid #2a3048;background:transparent;cursor:pointer;transition:all .15s;font-family:inherit}
+.quick-btn:hover,.qbtn:hover{border-color:rgba(59,126,255,.4);background:rgba(59,126,255,.05)}
+.quick-btn .q-title,.qt{font-size:13px;font-weight:500;color:#e2e8f0}
+.quick-btn .q-sub,.qs{font-size:11px;color:#6b7a9f;margin-top:2px}
+.type-select,.tpick{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.type-btn,.tpick-btn{flex:1;min-width:80px;padding:8px;border-radius:8px;border:0.5px solid #2a3048;background:transparent;color:#6b7a9f;font-size:13px;cursor:pointer;transition:all .15s;font-family:inherit;text-transform:capitalize}
+.type-btn.active,.tpick-btn.on{border-color:#3b7eff;background:rgba(59,126,255,.1);color:#3b7eff;font-weight:500}
+.import-zone,.izone{border:2px dashed #2a3048;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:14px}
+.import-zone:hover,.izone:hover{border-color:#3b7eff;background:rgba(59,126,255,.05)}
+.import-zone input,.izone input{display:none}
+.import-preview{background:#181c27;border-radius:8px;overflow:hidden;margin-bottom:14px;max-height:200px;overflow-y:auto}
+/* ── Work Order ──────────────────────────────────────────────────── */
+.wo-page,.wo-wrap{max-width:880px}
+.wo-section,.wo-sec{background:#181c27;border-radius:12px;padding:20px;margin-bottom:14px}
+.wo-section-header,.wo-sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:0.5px solid #2a3048;flex-wrap:wrap}
+.wo-section-title,.wo-sec-title{font-size:13px;font-weight:600;color:#e2e8f0}
+.wo-section-sub,.wo-sec-sub{font-size:12px;color:#60a5fa;font-weight:600;margin-left:auto}
+/* ── Inspection ──────────────────────────────────────────────────── */
+.insp-grid,.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px;margin-bottom:12px}
+.insp-item,.ii{background:#1e2333;border:0.5px solid #2a3048;border-radius:8px;padding:10px 12px}
+.insp-item label,.ii label{font-size:10px;color:#6b7a9f;display:block;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.isel{width:100%;background:#0f1117;border:0.5px solid #2a3048;border-radius:6px;padding:6px 10px;font-size:12px;color:#e2e8f0;font-family:inherit;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+.isel:focus{border-color:#3b7eff}
+.isel.ok{border-color:rgba(34,197,94,.6);color:#4ade80}
+.isel.warn{border-color:rgba(245,158,11,.6);color:#fbbf24}
+.isel.bad{border-color:rgba(239,68,68,.6);color:#f87171}
+.insp-full,.ifull{grid-column:1/-1}
+.insp-full input,.ifull input{width:100%;background:#0f1117;border:0.5px solid #2a3048;border-radius:6px;padding:7px 10px;font-size:12px;color:#e2e8f0;font-family:inherit;outline:none}
+.insp-full input:focus,.ifull input:focus{border-color:#3b7eff}
+/* ── Corner boxes ────────────────────────────────────────────────── */
+.corner-grid,.cgrid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.corner-box,.cbox{background:#1e2333;border:0.5px solid #2a3048;border-radius:8px;padding:12px;text-align:center;transition:border-color .2s}
+.corner-box .pos,.cpos{font-size:9px;font-weight:700;color:#6b7a9f;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.corner-box input,.cbox input{width:100%;background:#0f1117;border:0.5px solid #2a3048;border-radius:6px;padding:7px 6px;font-size:16px;font-weight:700;color:#e2e8f0;text-align:center;font-family:'JetBrains Mono',monospace;outline:none;-webkit-appearance:none}
+.corner-box input:focus,.cbox input:focus{border-color:#3b7eff}
+.corner-box .unit,.cunit{font-size:10px;color:#6b7a9f;margin-top:4px;transition:color .2s}
+/* ── Cost bar ────────────────────────────────────────────────────── */
+.cost-bar,.cbar{background:rgba(59,126,255,.07);border:0.5px solid rgba(59,126,255,.2);border-radius:10px;padding:16px;margin-bottom:14px}
+.cost-line,.cline{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:#e2e8f0}
+.cost-line.total,.cline.tot{font-weight:700;font-size:16px;border-top:0.5px solid rgba(59,126,255,.3);margin-top:8px;padding-top:10px;color:#60a5fa}
+
+/* ── Light mode contrast fixes ─────────────────────────────────────── */
+body.light{background:#e9ecf5;color:#1e2433}
+body.light .page{background:#e9ecf5}
+body.light .sidebar{background:#f0f2fa;border-right-color:#d0d6e8}
+body.light .sidebar-logo h1{color:#1e2433}
+body.light .sidebar-logo p{color:#4a5568}
+body.light .nav-section{color:#718096}
+body.light .nav-item{color:#4a5568}
+body.light .nav-item:hover{background:#e2e6f3;color:#1e2433}
+body.light .nav-item.active{background:rgba(29,78,216,.12);color:#1d4ed8}
+body.light .mobile-bar{background:#f0f2fa;border-bottom-color:#d0d6e8}
+body.light .mobile-bar span{color:#1e2433}
+body.light .card{background:#f5f6fa;border-color:#d0d6e8}
+body.light .card-header{border-bottom-color:#d0d6e8}
+body.light .card-title{color:#1e2433}
+body.light .card-link{color:#1d4ed8}
+body.light .metric{background:#f5f6fa;border-color:#d0d6e8}
+body.light .metric-label{color:#4a5568}
+body.light .metric-value{color:#1e2433}
+body.light .metric-sub{color:#4a5568}
+body.light .divide-row{border-bottom-color:#d0d6e8;color:#1e2433}
+body.light .divide-row:hover{background:#e2e6f3}
+body.light .row{border-bottom-color:#d0d6e8}
+body.light .row:hover{background:#e2e6f3}
+body.light th{color:#374151;border-bottom-color:#d0d6e8;background:#e4e7f2;font-weight:600}
+body.light td{border-bottom-color:#d0d6e8;color:#1e2433;background:#f5f6fa}
+body.light tr:hover td{background:#e8ebf5}
+body.light .mono{color:#374151;font-weight:500}
+body.light .form-label,body.light .fl{color:#374151}
+body.light label{color:#374151}
+body.light .form-input,body.light .fi,body.light .form-select,body.light .fsel,body.light .form-textarea,body.light .fta{background:#fff;border-color:#c3cad8;color:#1e2433}
+body.light .form-input::placeholder,body.light .fi::placeholder{color:#94a3b8}
+body.light .form-input:focus,body.light .fi:focus,body.light .form-select:focus,body.light .fsel:focus{border-color:#3b7eff;background:#fff}
+body.light .page-header h2,body.light .phdr h2{color:#1e2433}
+body.light .page-header p,body.light .phdr p{color:#4a5568}
+body.light .modal{background:#f5f6fa;border-color:#d0d6e8}
+body.light .modal h3{color:#1e2433}
+body.light .modal-overlay,body.light .moverlay{background:rgba(0,0,0,.45)}
+body.light .tabs{background:#dde1ef;border-color:#d0d6e8}
+body.light .tab{color:#4a5568}
+body.light .tab.active,body.light .tab.on{background:#f5f6fa;color:#1e2433;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+body.light .wo-section,body.light .wo-sec{background:#eef0f8;border:0.5px solid #d0d6e8}
+body.light .wo-section-header,body.light .wo-sec-hdr{border-bottom-color:#d0d6e8;background:#e4e7f2}
+body.light .wo-section-title,body.light .wo-sec-title{color:#1e2433}
+body.light .wo-section-sub,body.light .wo-sec-sub{color:#4a5568}
+body.light .insp-item,body.light .ii{background:#e8ebf5;border-color:#d0d6e8}
+body.light .insp-item label,body.light .ii label{color:#374151}
+body.light .isel{background:#fff;border-color:#c3cad8;color:#1e2433}
+body.light .insp-full input,body.light .ifull input{background:#fff;border-color:#c3cad8;color:#1e2433}
+body.light .corner-box,body.light .cbox{background:#e8ebf5;border-color:#d0d6e8}
+body.light .corner-box .pos,body.light .cpos{color:#4a5568}
+body.light .corner-box input,body.light .cbox input{background:#fff;border-color:#c3cad8;color:#1e2433}
+body.light .corner-box .unit,body.light .cunit{color:#4a5568}
+body.light .btn-ghost,body.light .btn-g{border-color:#c3cad8;color:#374151;background:#f0f2fa}
+body.light .btn-ghost:hover,body.light .btn-g:hover{background:#e2e6f3;color:#1e2433}
+body.light .btn-icon,body.light .icon-btn{color:#4a5568}
+body.light .btn-icon:hover,body.light .icon-btn:hover{color:#1e2433}
+body.light .drawer{background:#f5f6fa;border-right-color:#d0d6e8}
+body.light .back-btn,body.light .back{color:#4a5568}
+body.light .back-btn:hover,body.light .back:hover{color:#1e2433}
+body.light .quick-btn,body.light .qbtn{border-color:#d0d6e8;background:#f5f6fa}
+body.light .quick-btn:hover,body.light .qbtn:hover{border-color:#1d4ed8;background:#e8eeff}
+body.light .quick-btn .q-title,body.light .qt{color:#1e2433}
+body.light .quick-btn .q-sub,body.light .qs{color:#4a5568}
+body.light .cost-line,body.light .cline{color:#1e2433}
+body.light .asset-card,body.light .acard{background:#f5f6fa;border-color:#d0d6e8}
+body.light .asset-card:hover,body.light .acard:hover{border-color:#1d4ed8}
+body.light .import-zone,body.light .izone{border-color:#c3cad8}
+body.light .type-btn,body.light .tpick-btn{border-color:#c3cad8;color:#374151;background:#f5f6fa}
+body.light .error-box,body.light .ebox{background:rgba(153,27,27,.08);border-color:rgba(153,27,27,.25);color:#991b1b}
+body.light .alert-danger,body.light .alert-d{background:rgba(153,27,27,.08);color:#991b1b;border-left-color:#dc2626}
+body.light .alert-warn,body.light .alert-w{background:rgba(146,64,14,.08);color:#92400e;border-left-color:#d97706}
+body.light .workload-bar-bg{background:#d0d6e8}
+body.light .nav-badge{background:rgba(153,27,27,.15);color:#991b1b}
+body.light .search-wrap svg,body.light .sw svg{color:#94a3b8}
+body.light .table-wrap{background:#f5f6fa}
+/* ── Responsive table / card switching ─────────────────────────── */
+.table-mobile{display:block}
+.table-wrap table{display:none}
+@media(min-width:768px){
+  .table-mobile{display:none}
+  .table-wrap table{display:table}
+}
+body.light .filters{background:#e9ecf5}
+/* Badge colors — all status/priority badges in light mode */
+body.light .b-urgent{background:rgba(153,27,27,.12);color:#991b1b}
+body.light .b-high{background:rgba(146,64,14,.12);color:#92400e}
+body.light .b-normal{background:rgba(29,78,216,.12);color:#1d4ed8}
+body.light .b-low{background:rgba(75,85,99,.15);color:#374151}
+body.light .b-open{background:rgba(146,64,14,.12);color:#92400e}
+body.light .b-in_progress{background:rgba(29,78,216,.12);color:#1d4ed8}
+body.light .b-on_hold{background:rgba(75,85,99,.12);color:#374151}
+body.light .b-completed{background:rgba(5,122,85,.12);color:#065f46}
+body.light .b-cancelled{background:rgba(75,85,99,.12);color:#374151}
+body.light .b-active{background:rgba(5,122,85,.12);color:#065f46}
+body.light .b-in_shop{background:rgba(29,78,216,.12);color:#1d4ed8}
+body.light .b-down{background:rgba(153,27,27,.12);color:#991b1b}
+body.light .b-retired{background:rgba(75,85,99,.12);color:#374151}
+/* Inline style color overrides — both space variants since React may render either */
+body.light [style*="color: #4ade80"],body.light [style*="color:#4ade80"]{color:#166534!important}
+body.light [style*="color: #22c55e"],body.light [style*="color:#22c55e"]{color:#166534!important}
+body.light [style*="color: #f87171"],body.light [style*="color:#f87171"]{color:#991b1b!important}
+body.light [style*="color: #ef4444"],body.light [style*="color:#ef4444"]{color:#991b1b!important}
+body.light [style*="color: #fbbf24"],body.light [style*="color:#fbbf24"]{color:#92400e!important}
+body.light [style*="color: #f59e0b"],body.light [style*="color:#f59e0b"]{color:#92400e!important}
+body.light [style*="color: #60a5fa"],body.light [style*="color:#60a5fa"]{color:#1d4ed8!important}
+body.light [style*="color: #3b7eff"],body.light [style*="color:#3b7eff"]{color:#1d4ed8!important}
+body.light [style*="color: #6b7a9f"],body.light [style*="color:#6b7a9f"]{color:#4a5568!important}
+body.light [style*="color: #94a3b8"],body.light [style*="color:#94a3b8"]{color:#4a5568!important}
+body.light [style*="color: #e2e8f0"],body.light [style*="color:#e2e8f0"]{color:#1e2433!important}
+/* Inline dark backgrounds → light equivalents */
+body.light [style*="background: #181c27"],body.light [style*="background:#181c27"]{background:#e8ebf5!important}
+body.light [style*="background: #1e2333"],body.light [style*="background:#1e2333"]{background:#e8ebf5!important}
+body.light [style*="background: #0f1117"],body.light [style*="background:#0f1117"]{background:#e9ecf5!important}
+body.light [style*="background: #2a3048"],body.light [style*="background:#2a3048"]{background:#d4d9e8!important}
+body.light [style*="background: #131720"],body.light [style*="background:#131720"]{background:#eaecf6!important}
+/* rgba dark backgrounds → lighter equivalents */
+body.light [style*="rgba(24,28,39"]{background:rgba(232,235,245,0.9)!important}
+body.light [style*="rgba(34,197,94,.07)"],body.light [style*="rgba(34,197,94, .07)"]{background:rgba(5,122,85,.07)!important}
+body.light [style*="rgba(34,197,94,.12)"],body.light [style*="rgba(34,197,94, .12)"]{background:rgba(5,122,85,.1)!important}
+body.light [style*="rgba(34,197,94,.2)"],body.light [style*="rgba(34,197,94, .2)"]{background:rgba(5,122,85,.12)!important;border-color:rgba(5,122,85,.25)!important}
+body.light [style*="rgba(34,197,94,.3)"],body.light [style*="rgba(34,197,94, .3)"]{border-color:rgba(5,122,85,.3)!important}
+body.light [style*="rgba(239,68,68,.1)"],body.light [style*="rgba(239,68,68, .1)"]{background:rgba(153,27,27,.08)!important}
+body.light [style*="rgba(239,68,68,.15)"],body.light [style*="rgba(239,68,68, .15)"]{background:rgba(153,27,27,.1)!important}
+body.light [style*="rgba(245,158,11,.1)"],body.light [style*="rgba(245,158,11, .1)"]{background:rgba(146,64,14,.08)!important}
+body.light [style*="rgba(245,158,11,.15)"],body.light [style*="rgba(245,158,11, .15)"]{background:rgba(146,64,14,.1)!important}
+body.light [style*="rgba(59,126,255,.1)"],body.light [style*="rgba(59,126,255, .1)"]{background:rgba(29,78,216,.08)!important}
+body.light [style*="rgba(59,126,255,.2)"],body.light [style*="rgba(59,126,255, .2)"]{background:rgba(29,78,216,.1)!important}
+body.light [style*="rgba(107,122,159,.1)"],body.light [style*="rgba(107,122,159, .1)"]{background:rgba(74,85,104,.08)!important}
+
+
+
+</style>
 </head>
 <body>
 <div id="root"></div>
 <script>
+
 
 
 
@@ -13045,6 +13354,167 @@ function TechDashboard({setPage,myWorkerId=null}){
 
 
 
+
+// ── Top-level assembly constants (outside all components) ─────────────────────
+const ASM_GAUGES=['#18','#16','#14','#12','#10','#8','#6','#4','#3','#2','#1','1/0','2/0','3/0','4/0','250MCM','350MCM','500MCM','750MCM'];
+const ASM_WIRE_COLORS=[{n:'Black',h:'#111'},{n:'Red',h:'#c0392b'},{n:'Blue',h:'#2471a3'},{n:'White',h:'#ecece8'},{n:'Green',h:'#1e8449'},{n:'Yellow',h:'#d4ac0d'},{n:'Orange',h:'#ca6f1e'},{n:'Brown',h:'#7d3c0d'},{n:'Gray',h:'#717d7e'},{n:'Purple',h:'#7d3c98'},{n:'Pink',h:'#c0307a'},{n:'Bare',h:'#b7950b'}];
+const ASM_INS=['THHN','THWN','XHHW','USE-2','MC','NM-B','UF','TFFN','RHH'];
+const ASM_CONN=['Romex Clamp','EMT Connector','MC Connector','Liquidtight','Rigid Connector','Grounding Bushing','1/2" Trade','3/4" Trade','1" Trade'];
+const ASM_DEVICES=['Duplex Outlet','GFCI Outlet','20A Outlet','Decora Outlet','Single Pole Switch','3-Way Switch','4-Way Switch','Dimmer Switch','Motion Switch','Blank Plate','Data Jack','USB Outlet','Phone Jack'];
+const ASM_COVERS=['Single Gang Plate','Double Gang Plate','Triple Gang Plate','Weatherproof Cover','Bubble Cover','Industrial Cover','Mud Ring 1/2"','Mud Ring 5/8"','Extension Ring','Raised Cover'];
+const ASM_KO_POS=['Top-L','Top-C','Top-R','Right-T','Right-C','Right-B','Bot-L','Bot-C','Bot-R','Left-T','Left-C','Left-B','Back-TL','Back-TR','Back-C','Back-BL','Back-BR'];
+
+// ── Top-level Chip component ──────────────────────────────────────────────────
+function AsmChip({label,on,onClick,col,mono}){
+  const bg=on?(col==='green'?'#0F6E56':col==='amber'?'#854F0B':col==='purple'?'#533AB7':'#185FA5'):'transparent';
+  const color=on?(col==='green'?'#E1F5EE':col==='amber'?'#FAEEDA':col==='purple'?'#EEEDFE':'#E6F1FB'):'#94a3b8';
+  const border=on?'none':'.5px solid #334155';
+  return h('button',{onClick,style:{padding:'4px 11px',borderRadius:20,border,background:bg,color,fontSize:mono?11:12,cursor:'pointer',fontFamily:mono?'monospace':'inherit',transition:'all .1s',whiteSpace:'nowrap',lineHeight:1.4}},label);
+}
+
+// ── Top-level Swatch component ────────────────────────────────────────────────
+function AsmSwatch({c,on,onClick}){
+  return h('div',{onClick,title:c.n,style:{display:'flex',flexDirection:'column',alignItems:'center',gap:3,cursor:'pointer'}},
+    h('div',{style:{width:30,height:30,borderRadius:'50%',background:c.h,
+      outline:on?`3px solid ${c.h}`:'2px solid transparent',outlineOffset:2,
+      border:'2px solid rgba(255,255,255,.12)',
+      transform:on?'scale(1.18)':'scale(1)',transition:'all .12s',
+      boxShadow:on?'0 2px 8px rgba(0,0,0,.5)':'none'}}),
+    h('div',{style:{fontSize:9,color:on?'#e2e8f0':'#64748b',textAlign:'center',width:30,lineHeight:1.2}},c.n)
+  );
+}
+
+// ── Wire conductor form — top-level stable component ─────────────────────────
+function WireCondForm({gauge,setGauge,ins,setIns,color,setColor,allColors,dynGauges,onAdd,onCancel}){
+  const nameRef=useRef(null);
+  const ftRef=useRef(null);
+  return h('div',{style:{background:'rgba(24,95,165,.07)',border:'.5px solid rgba(24,95,165,.35)',borderRadius:12,padding:16,marginTop:8}},
+    h('div',{style:{fontSize:11,color:'#64748b',marginBottom:10,fontWeight:500,textTransform:'uppercase',letterSpacing:'.04em'}},'New Conductor'),
+    h('div',{style:{display:'grid',gridTemplateColumns:'1fr 110px',gap:10,marginBottom:12}},
+      h('div',null,
+        h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4}},'Name'),
+        h('input',{ref:nameRef,placeholder:'e.g. Phase A',style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'7px 10px',background:'rgba(255,255,255,.05)',color:'#e2e8f0',fontSize:13,outline:'none'}})
+      ),
+      h('div',null,
+        h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4}},'Footage (ft)'),
+        h('input',{ref:ftRef,type:'number',placeholder:'0',style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'7px 10px',background:'rgba(255,255,255,.05)',color:'#e2e8f0',fontSize:13,outline:'none'}})
+      )
+    ),
+    h('div',{style:{marginBottom:12}},
+      h('div',{style:{fontSize:11,color:'#64748b',marginBottom:6}},'Gauge'),
+      h('div',{style:{display:'flex',flexWrap:'wrap',gap:4}},
+        dynGauges.map(g=>h(AsmChip,{key:g,label:g,on:gauge===g,onClick:()=>setGauge(g),col:'blue',mono:true}))
+      )
+    ),
+    h('div',{style:{marginBottom:12}},
+      h('div',{style:{fontSize:11,color:'#64748b',marginBottom:6}},'Insulation'),
+      h('div',{style:{display:'flex',flexWrap:'wrap',gap:4}},
+        ASM_INS.map(ins2=>h(AsmChip,{key:ins2,label:ins2,on:ins===ins2,onClick:()=>setIns(ins2),col:'green',mono:true}))
+      )
+    ),
+    h('div',{style:{marginBottom:14}},
+      h('div',{style:{fontSize:11,color:'#64748b',marginBottom:8}},'Color'),
+      h('div',{style:{display:'flex',flexWrap:'wrap',gap:8}},
+        allColors.map(c=>h(AsmSwatch,{key:c.n,c,on:color.n===c.n,onClick:()=>setColor(c)}))
+      )
+    ),
+    // Preview
+    h('div',{style:{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',background:'rgba(255,255,255,.04)',borderRadius:8,marginBottom:10,border:`.5px solid ${color.h}30`}},
+      h('div',{style:{width:12,height:12,borderRadius:'50%',background:color.h,border:'1.5px solid rgba(255,255,255,.2)',flexShrink:0}}),
+      h('span',{style:{fontSize:12,color:'#64748b',fontFamily:'monospace'}},gauge+' · '+ins+' · '+color.n)
+    ),
+    h('div',{style:{display:'flex',gap:8}},
+      h('button',{onClick:()=>{const n=nameRef.current?.value||'';const f=ftRef.current?.value||'';onAdd(n,f);if(nameRef.current)nameRef.current.value='';if(ftRef.current)ftRef.current.value='';},
+        style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#185FA5',color:'#E6F1FB',fontSize:13,cursor:'pointer'}},'\u2713 Add Conductor'),
+      h('button',{onClick:onCancel,style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
+    )
+  );
+}
+
+// ── Box diagram — top-level stable component ──────────────────────────────────
+function BoxDiagram({knockouts,selPos,onSelect}){
+  const activeKOs=knockouts.map(k=>k.knockout_position);
+  // KO positions: side KOs and back KOs
+  const sideKOs=[
+    {id:'Top-L',x:30,y:7},{id:'Top-C',x:44,y:7},{id:'Top-R',x:58,y:7},
+    {id:'Right-T',x:82,y:22},{id:'Right-C',x:82,y:44},{id:'Right-B',x:82,y:66},
+    {id:'Bot-R',x:58,y:91},{id:'Bot-C',x:44,y:91},{id:'Bot-L',x:30,y:91},
+    {id:'Left-B',x:8,y:66},{id:'Left-C',x:8,y:44},{id:'Left-T',x:8,y:22},
+  ];
+  // Dice-5 pattern for back KOs
+  const backKOs=[
+    {id:'Back-TL',x:33,y:33},{id:'Back-TR',x:55,y:33},
+    {id:'Back-C', x:44,y:50},
+    {id:'Back-BL',x:33,y:67},{id:'Back-BR',x:55,y:67},
+  ];
+  const dotStyle=(id)=>{
+    const active=activeKOs.includes(id);
+    const sel=selPos===id;
+    const ko=knockouts.find(k=>k.knockout_position===id);
+    return {
+      position:'absolute',left:id.startsWith('Back')?((id==='Back-TL'?33:id==='Back-TR'?55:id==='Back-C'?44:id==='Back-BL'?33:55)+'%'):null,
+      top:null,
+      width:sel?22:18,height:sel?22:18,borderRadius:'50%',cursor:'pointer',
+      background:active?'#0F6E56':sel?'#185FA5':'rgba(255,255,255,.07)',
+      border:sel?'2px solid #63b3ed':active?'2px solid #38a169':'.5px solid #334155',
+      display:'flex',alignItems:'center',justifyContent:'center',
+      fontSize:8,color:active||sel?'#fff':'#475569',
+      fontWeight:sel?700:400,transition:'all .1s',
+      boxShadow:sel?'0 0 0 3px rgba(99,179,237,.3)':'none',
+      zIndex:2,
+    };
+  };
+  return h('div',{style:{position:'relative',width:'100%',paddingBottom:'80%'}},
+    h('div',{style:{position:'absolute',inset:0}},
+      // Box body
+      h('div',{style:{position:'absolute',left:'15%',top:'10%',width:'64%',height:'80%',border:'1.5px solid #334155',borderRadius:4,background:'rgba(255,255,255,.03)'}}),
+      // Center label
+      h('div',{style:{position:'absolute',left:'44%',top:'46%',fontSize:9,color:'#334155',textAlign:'center',lineHeight:1.5,pointerEvents:'none'}},'BACK'),
+      // Side labels
+      h('div',{style:{position:'absolute',left:'50%',top:'1%',transform:'translateX(-50%)',fontSize:9,color:'#475569'}},'\u2191 TOP'),
+      h('div',{style:{position:'absolute',right:'0%',top:'50%',transform:'translateY(-50%) rotate(90deg)',fontSize:9,color:'#475569',whiteSpace:'nowrap'}},'RIGHT \u2192'),
+      h('div',{style:{position:'absolute',left:'50%',bottom:'0%',transform:'translateX(-50%)',fontSize:9,color:'#475569'}},'\u2193 BTM'),
+      h('div',{style:{position:'absolute',left:'0%',top:'50%',transform:'translateY(-50%) rotate(-90deg)',fontSize:9,color:'#475569',whiteSpace:'nowrap'}},'\u2190 LEFT'),
+      // Side KO dots
+      ...sideKOs.map(ko=>{
+        const active=activeKOs.includes(ko.id);
+        const sel=selPos===ko.id;
+        return h('div',{key:ko.id,
+          style:{position:'absolute',left:ko.x+'%',top:ko.y+'%',transform:'translate(-50%,-50%)',
+            width:sel?22:18,height:sel?22:18,borderRadius:'50%',cursor:'pointer',
+            background:active?'#0F6E56':sel?'#185FA5':'rgba(255,255,255,.07)',
+            border:sel?'2px solid #63b3ed':active?'2px solid #38a169':'.5px solid #334155',
+            display:'flex',alignItems:'center',justifyContent:'center',
+            fontSize:8,color:active||sel?'#fff':'#475569',
+            fontWeight:sel?700:400,transition:'all .1s',
+            boxShadow:sel?'0 0 0 3px rgba(99,179,237,.3)':'none',zIndex:2},
+          onClick:()=>onSelect(selPos===ko.id?'':ko.id)},
+          active?h('span',{style:{fontSize:7}},'\u2713'):(sel?h('span',{style:{fontSize:9}},'\u25cf'):h('span',{style:{fontSize:8}},'\u00b7'))
+        );
+      }),
+      // Back KO dots (dice-5)
+      ...backKOs.map(ko=>{
+        const active=activeKOs.includes(ko.id);
+        const sel=selPos===ko.id;
+        return h('div',{key:ko.id,
+          style:{position:'absolute',left:ko.x+'%',top:ko.y+'%',transform:'translate(-50%,-50%)',
+            width:sel?18:14,height:sel?18:14,borderRadius:'50%',cursor:'pointer',
+            background:active?'#0F6E56':sel?'#185FA5':'rgba(255,255,255,.1)',
+            border:sel?'2px solid #63b3ed':active?'1.5px solid #38a169':'.5px solid #475569',
+            display:'flex',alignItems:'center',justifyContent:'center',
+            fontSize:7,color:active||sel?'#fff':'#6b7a9f',
+            transition:'all .1s',zIndex:3},
+          onClick:()=>onSelect(selPos===ko.id?'':ko.id)},
+          active?h('span',{style:{fontSize:6}},'\u2713'):(sel?'\u25cf':'\u00b7')
+        );
+      })
+    )
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Main Assemblies page
+// ══════════════════════════════════════════════════════════════════════════════
 function Assemblies({isTech=false}){
   const{data:assemblies,refetch}=useQuery(()=>sb.from('assemblies').select('*').order('name'));
   const[modal,setModal]=useState(null);
@@ -13052,45 +13522,7 @@ function Assemblies({isTech=false}){
   const filtered=(assemblies||[]).filter(a=>!search||a.name?.toLowerCase().includes(search.toLowerCase()));
   const existingTypes=[...new Set((assemblies||[]).map(a=>a.assembly_type).filter(Boolean))].sort();
 
-  const GAUGES=['#18','#16','#14','#12','#10','#8','#6','#4','#3','#2','#1','1/0','2/0','3/0','4/0','250MCM','350MCM','500MCM','750MCM'];
-  const WIRE_COLORS=[
-    {n:'Black',h:'#111111'},{n:'Red',h:'#c0392b'},{n:'Blue',h:'#2471a3'},
-    {n:'White',h:'#ecece8'},{n:'Green',h:'#1e8449'},{n:'Yellow',h:'#d4ac0d'},
-    {n:'Orange',h:'#ca6f1e'},{n:'Brown',h:'#7d3c0d'},{n:'Gray',h:'#717d7e'},
-    {n:'Pink',h:'#c0392b'},{n:'Purple',h:'#7d3c98'},{n:'Bare',h:'#b7950b'}
-  ];
-  const INS=['THHN','THWN','XHHW','USE-2','MC','NM-B','UF','TFFN','RHH'];
-  const CONN=['Romex Clamp','EMT Connector','MC Connector','Liquidtight','Rigid Connector','Grounding Bushing','Trade Size 1/2"','Trade Size 3/4"','Trade Size 1"'];
-  const DEVICES=['Duplex Outlet','GFCI Outlet','20A Outlet','Decora Outlet','Single Pole Switch','3-Way Switch','4-Way Switch','Dimmer Switch','Motion Switch','AFCI Breaker','Blank Plate','Phone Jack','Data Jack','USB Outlet'];
-  const COVERS=['Single Gang Plate','Double Gang Plate','Triple Gang Plate','Weatherproof Cover','Bubble Cover','Industrial Cover','Mud Ring 1/2"','Mud Ring 5/8"','Extension Ring','Raised Cover'];
-
-  // ── Chip ─────────────────────────────────────────────────────────────────
-  const Chip=({label,on,onClick,col='blue',mono=false,sm=false})=>{
-    const colors={blue:{on:'#185FA5',onB:'#185FA5',onT:'#E6F1FB'},green:{on:'#0F6E56',onB:'#0F6E56',onT:'#E1F5EE'},amber:{on:'#854F0B',onB:'#854F0B',onT:'#FAEEDA'},purple:{on:'#533AB7',onB:'#533AB7',onT:'#EEEDFE'}};
-    const c=colors[col]||colors.blue;
-    return h('button',{
-      onClick,
-      style:{padding:sm?'3px 8px':'4px 11px',borderRadius:20,border:on?'none':'.5px solid #334155',
-        background:on?c.on:'transparent',color:on?c.onT:'#94a3b8',fontSize:mono?11:12,
-        cursor:'pointer',fontFamily:mono?'monospace':'inherit',transition:'all .1s',whiteSpace:'nowrap',lineHeight:1.4}
-    },label);
-  };
-
-  // ── Color swatch ─────────────────────────────────────────────────────────
-  const Swatch=({c,on,onClick})=>h('div',{
-    onClick,title:c.n,
-    style:{display:'flex',flexDirection:'column',alignItems:'center',gap:3,cursor:'pointer'}
-  },
-    h('div',{style:{width:30,height:30,borderRadius:'50%',background:c.h,
-      outline:on?`3px solid ${c.h}`:'2px solid transparent',outlineOffset:2,
-      border:'2px solid rgba(255,255,255,.12)',transform:on?'scale(1.18)':'scale(1)',
-      transition:'all .12s',boxShadow:on?'0 2px 8px rgba(0,0,0,.5)':'none'}}),
-    h('div',{style:{fontSize:9,color:on?'#e2e8f0':'#64748b',textAlign:'center',width:30,lineHeight:1.2,transition:'color .1s'}},c.n)
-  );
-
-  // ══════════════════════════════════════════════════════════════════════════
-  // Assembly Modal
-  // ══════════════════════════════════════════════════════════════════════════
+  // ── Assembly Modal ──────────────────────────────────────────────────────────
   function AssemblyModal({assembly,onClose}){
     const isEdit=!!assembly?.id;
     const[name,setName]=useState(assembly?.name||'');
@@ -13102,45 +13534,28 @@ function Assemblies({isTech=false}){
     const[savedId,setSavedId]=useState(assembly?.id||null);
     const[parts,setParts]=useState([]);
     const[activeTab,setActiveTab]=useState('parts');
-    const[formMode,setFormMode]=useState(null); // null | 'conductor' | 'knockout' | 'device' | 'cover' | 'part'
-    const[colorPicker,setColorPicker]=useState(false); // custom color picker open
-    const[pickerHue,setPickerHue]=useState(0);
-    const[customColorName,setCustomColorName]=useState('');
+    const[formMode,setFormMode]=useState(null);
 
-    // ── Wire form state (stable refs prevent re-render defocus) ─────────────
-    const cNameRef=useRef('');const cFtRef=useRef('');
+    // Wire form state (chips only — inputs are uncontrolled via refs in WireCondForm)
     const[cGauge,setCGauge]=useState('#12');
-    const[cColor,setCColor]=useState(WIRE_COLORS[0]);
     const[cIns,setCIns]=useState('THHN');
-    const[cNameV,setCNameV]=useState('');   // display only
-    const[cFtV,setCFtV]=useState('');       // display only
+    const[cColor,setCColor]=useState(ASM_WIRE_COLORS[0]);
 
-    // ── Box form state ──────────────────────────────────────────────────────
+    // Knockout form state
     const[kPos,setKPos]=useState('');
     const[kConn,setKConn]=useState('EMT Connector');
-    const[kCustomPos,setKCustomPos]=useState('');
     const[kCustomConn,setKCustomConn]=useState('');
 
-    // ── Device / Cover form ─────────────────────────────────────────────────
+    // Device/cover state
     const[devType,setDevType]=useState('');
     const[covType,setCovType]=useState('');
 
-    // ── Part form ───────────────────────────────────────────────────────────
-    const pNameRef=useRef('');const pQtyRef=useRef('1');const pCostRef=useRef('');
-    const[pUnit,setPUnit]=useState('each');
-    const[pNameV,setPNameV]=useState('');
-
-    // ── Plan ────────────────────────────────────────────────────────────────
+    // Plan state
     const[planData,setPlanData]=useState(assembly?.plan_data||null);
     const[planFilename,setPlanFilename]=useState(assembly?.plan_filename||null);
     const[annotations,setAnnotations]=useState(assembly?.plan_annotations||[]);
     const[addingPin,setAddingPin]=useState(false);
     const[selPin,setSelPin]=useState(null);
-
-    // Dynamic lists
-    const dynGauges=[...new Set([...GAUGES,...parts.filter(p=>p.gauge).map(p=>p.gauge)])];
-    const dynConns=[...new Set([...CONN,...parts.filter(p=>p.connector_type).map(p=>p.connector_type)])];
-    const allSwatchColors=[...WIRE_COLORS,...parts.filter(p=>p.color_hex&&!WIRE_COLORS.find(c=>c.n===p.wire_color)).map(p=>({n:p.wire_color||'Custom',h:p.color_hex}))];
 
     useEffect(()=>{
       if(savedId)sb.from('assembly_parts').select('*').eq('assembly_id',savedId).order('sort_order').then(({data})=>setParts(data||[]));
@@ -13153,7 +13568,10 @@ function Assemblies({isTech=false}){
     const devices=parts.filter(p=>p.part_type==='device');
     const covers=parts.filter(p=>p.part_type==='cover');
     const materials=parts.filter(p=>p.part_type==='material');
-    const totalFt=conductors.reduce((s,p)=>s+(p.footage||0),0);
+    const totalFt=conductors.reduce((s,p)=>s+(parseFloat(p.footage)||0),0);
+    const dynGauges=[...new Set([...ASM_GAUGES,...parts.filter(p=>p.gauge).map(p=>p.gauge)])];
+    const dynConns=[...new Set([...ASM_CONN,...parts.filter(p=>p.connector_type).map(p=>p.connector_type)])];
+    const allColors=[...ASM_WIRE_COLORS,...parts.filter(p=>p.color_hex&&!ASM_WIRE_COLORS.find(c=>c.n===p.wire_color)).map(p=>({n:p.wire_color||'Custom',h:p.color_hex}))];
 
     const saveAssembly=async()=>{
       if(!name.trim()){setErr('Name required');return;}
@@ -13164,282 +13582,86 @@ function Assemblies({isTech=false}){
         await sb.from('assemblies').update(payload).eq('id',savedId||assembly.id);
         setSaving(false);refetch();onClose();
       } else {
-        const{data,error}=await sb.from('assemblies').insert(payload).select().single();
+        const{data:saved,error}=await sb.from('assemblies').insert(payload).select().single();
         setSaving(false);if(error){setErr(error.message);return;}
-        setSavedId(data.id);refetch();setFormMode('conductor');
+        setSavedId(saved.id);refetch();setFormMode('conductor');
       }
     };
 
-    const addConductor=async()=>{
-      if(!savedId||!cNameRef.current.trim())return;
+    const addConductor=async(cName,cFt)=>{
+      if(!savedId||!cName.trim())return;
       const{data:p}=await sb.from('assembly_parts').insert({
-        assembly_id:savedId,part_type:'wire_conductor',
-        name:cNameRef.current.trim(),gauge:cGauge,
-        wire_color:cColor.n,color_hex:cColor.h,insulation_type:cIns,
-        footage:parseFloat(cFtRef.current)||null,sort_order:parts.length
+        assembly_id:savedId,part_type:'wire_conductor',name:cName.trim(),
+        gauge:cGauge,wire_color:cColor.n,color_hex:cColor.h,insulation_type:cIns,
+        footage:parseFloat(cFt)||null,sort_order:parts.length
       }).select().single();
       if(p)setParts(x=>[...x,p]);
-      cNameRef.current='';cFtRef.current='';
-      setCNameV('');setCFtV('');setFormMode(null);
+      setFormMode(null);
     };
 
     const addKnockout=async()=>{
       if(!savedId||!kPos)return;
-      const pos=kPos==='__new__'?kCustomPos.trim():kPos;
       const conn=kConn==='__new__'?kCustomConn.trim():kConn;
       const{data:p}=await sb.from('assembly_parts').insert({
-        assembly_id:savedId,part_type:'knockout',name:pos+' KO',
-        knockout_position:pos,connector_type:conn,sort_order:parts.length
+        assembly_id:savedId,part_type:'knockout',name:kPos+' KO',
+        knockout_position:kPos,connector_type:conn,sort_order:parts.length
       }).select().single();
       if(p)setParts(x=>[...x,p]);
-      setKPos('');setFormMode(null);
+      setKPos('');setKConn('EMT Connector');setFormMode(null);
     };
 
     const addDevice=async()=>{
       if(!savedId||!devType)return;
-      const{data:p}=await sb.from('assembly_parts').insert({
-        assembly_id:savedId,part_type:'device',name:devType,device_type:devType,sort_order:parts.length
-      }).select().single();
-      if(p)setParts(x=>[...x,p]);
-      setDevType('');setFormMode(null);
+      const{data:p}=await sb.from('assembly_parts').insert({assembly_id:savedId,part_type:'device',name:devType,device_type:devType,sort_order:parts.length}).select().single();
+      if(p)setParts(x=>[...x,p]);setDevType('');setFormMode(null);
     };
 
     const addCover=async()=>{
       if(!savedId||!covType)return;
-      const{data:p}=await sb.from('assembly_parts').insert({
-        assembly_id:savedId,part_type:'cover',name:covType,cover_type:covType,sort_order:parts.length
-      }).select().single();
-      if(p)setParts(x=>[...x,p]);
-      setCovType('');setFormMode(null);
-    };
-
-    const addPart=async()=>{
-      if(!savedId||!pNameRef.current.trim())return;
-      const{data:p}=await sb.from('assembly_parts').insert({
-        assembly_id:savedId,part_type:'material',name:pNameRef.current.trim(),
-        quantity:parseFloat(pQtyRef.current)||1,unit:pUnit,unit_cost:pCostRef.current||null,sort_order:parts.length
-      }).select().single();
-      if(p)setParts(x=>[...x,p]);
-      pNameRef.current='';pQtyRef.current='1';pCostRef.current='';
-      setPNameV('');setFormMode(null);
+      const{data:p}=await sb.from('assembly_parts').insert({assembly_id:savedId,part_type:'cover',name:covType,cover_type:covType,sort_order:parts.length}).select().single();
+      if(p)setParts(x=>[...x,p]);setCovType('');setFormMode(null);
     };
 
     const delPart=async id=>{await sb.from('assembly_parts').delete().eq('id',id);setParts(x=>x.filter(p=>p.id!==id));};
 
-    // ── WIRE CONDUCTOR FORM ──────────────────────────────────────────────────
-    const WireForm=()=>h('div',{style:{background:'rgba(24,95,165,.07)',border:'.5px solid rgba(24,95,165,.35)',borderRadius:12,padding:16,marginTop:8}},
-      // Name + footage
-      h('div',{style:{display:'grid',gridTemplateColumns:'1fr 120px',gap:10,marginBottom:14}},
-        h('div',null,
-          h('div',{style:{fontSize:11,color:'#64748b',marginBottom:5,fontWeight:500}},'\u25ba Conductor name'),
-          h('input',{
-            value:cNameV,
-            onChange:e=>{cNameRef.current=e.target.value;setCNameV(e.target.value);},
-            placeholder:'e.g. Phase A, Neutral, Ground',
-            style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'7px 10px',background:'rgba(255,255,255,.05)',color:'#e2e8f0',fontSize:13,outline:'none'}
-          })
-        ),
-        h('div',null,
-          h('div',{style:{fontSize:11,color:'#64748b',marginBottom:5,fontWeight:500}},'Footage (ft)'),
-          h('input',{
-            type:'number',value:cFtV,
-            onChange:e=>{cFtRef.current=e.target.value;setCFtV(e.target.value);},
-            placeholder:'0',
-            style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'7px 10px',background:'rgba(255,255,255,.05)',color:'#e2e8f0',fontSize:13,outline:'none'}
-          })
+    // Conductor card
+    const CondCard=({p})=>{const ch=p.color_hex||'#888';return h('div',{style:{borderRadius:8,marginBottom:4,padding:'8px 12px',background:`linear-gradient(135deg,${ch}18 0%,rgba(255,255,255,.03) 100%)`,border:`.5px solid ${ch}40`,display:'flex',alignItems:'center',gap:10}},
+      h('div',{style:{width:16,height:16,borderRadius:'50%',background:ch,border:'2px solid rgba(255,255,255,.2)',flexShrink:0,boxShadow:'0 2px 4px rgba(0,0,0,.4)'}}),
+      h('div',{style:{flex:1,minWidth:0}},
+        h('div',{style:{fontWeight:600,fontSize:13,color:'#e2e8f0',marginBottom:2}},p.name),
+        h('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
+          p.gauge&&h('span',{style:{padding:'1px 7px',borderRadius:4,background:'rgba(24,95,165,.2)',border:'.5px solid rgba(24,95,165,.4)',fontSize:11,color:'#93c5fd',fontFamily:'monospace'}},p.gauge),
+          p.insulation_type&&h('span',{style:{padding:'1px 7px',borderRadius:4,background:'rgba(15,110,86,.2)',border:'.5px solid rgba(15,110,86,.4)',fontSize:11,color:'#6ee7b7',fontFamily:'monospace'}},p.insulation_type),
+          h('span',{style:{padding:'1px 7px',borderRadius:4,background:`${ch}22`,border:`.5px solid ${ch}50`,fontSize:11,color:ch}},p.wire_color||'—'),
+          p.footage&&h('span',{style:{padding:'1px 7px',borderRadius:4,background:'rgba(255,255,255,.06)',border:'.5px solid #334155',fontSize:11,color:'#94a3b8'}},p.footage+"'")
         )
       ),
-      // Gauge
-      h('div',{style:{marginBottom:14}},
-        h('div',{style:{fontSize:11,color:'#64748b',marginBottom:6,fontWeight:500}},'\u25ba Wire gauge'),
-        h('div',{style:{display:'flex',flexWrap:'wrap',gap:4}},
-          dynGauges.map(g=>h(Chip,{key:g,label:g,on:cGauge===g,onClick:()=>setCGauge(g),col:'blue',mono:true})),
-          h(Chip,{label:'+ custom',on:false,onClick:()=>setCGauge('__new__'),col:'blue'})
-        )
-      ),
-      // Insulation
-      h('div',{style:{marginBottom:14}},
-        h('div',{style:{fontSize:11,color:'#64748b',marginBottom:6,fontWeight:500}},'\u25ba Insulation type'),
-        h('div',{style:{display:'flex',flexWrap:'wrap',gap:4}},
-          INS.map(ins=>h(Chip,{key:ins,label:ins,on:cIns===ins,onClick:()=>setCIns(ins),col:'green',mono:true}))
-        )
-      ),
-      // Color swatches
-      h('div',{style:{marginBottom:16}},
-        h('div',{style:{fontSize:11,color:'#64748b',marginBottom:8,fontWeight:500}},'\u25ba Wire color'),
-        h('div',{style:{display:'flex',flexWrap:'wrap',gap:10,alignItems:'flex-end'}},
-          allSwatchColors.map(c=>h(Swatch,{key:c.n,c,on:cColor.n===c.n,onClick:()=>{setCColor(c);setColorPicker(false);}})),
-          // Color wheel button
-          h('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',gap:3,cursor:'pointer'},onClick:()=>setColorPicker(!colorPicker)},
-            h('div',{style:{width:30,height:30,borderRadius:'50%',background:'conic-gradient(red,yellow,lime,cyan,blue,magenta,red)',border:'2px solid rgba(255,255,255,.2)',display:'flex',alignItems:'center',justifyContent:'center',outline:colorPicker?'3px solid #e2e8f0':'none',outlineOffset:2}}),
-            h('div',{style:{fontSize:9,color:'#64748b',textAlign:'center',width:30,lineHeight:1.2}},'wheel')
-          )
-        ),
-        colorPicker&&h('div',{style:{marginTop:12,padding:12,background:'rgba(255,255,255,.04)',border:'.5px solid #334155',borderRadius:10}},
-          h('div',{style:{fontSize:11,color:'#64748b',marginBottom:8}},'Custom color'),
-          h('div',{style:{display:'flex',gap:8,alignItems:'center',marginBottom:8}},
-            h('input',{type:'color',value:`hsl(${pickerHue},80%,45%)`,
-              onChange:e=>{
-                // Convert hex to hue approximation
-                setPickerHue(pickerHue);
-              },
-              style:{width:44,height:36,border:'none',borderRadius:6,cursor:'pointer',padding:2,background:'transparent'}}),
-            h('input',{style:{flex:1,border:'.5px solid #334155',borderRadius:6,padding:'6px 8px',background:'rgba(255,255,255,.05)',color:'#e2e8f0',fontSize:12,outline:'none'},
-              placeholder:'Color name (e.g. Violet)',value:customColorName,onChange:e=>setCustomColorName(e.target.value)}),
-            h('button',{
-              onClick:()=>{
-                if(!customColorName.trim())return;
-                const el=document.createElement('input');el.type='color';
-                const newC={n:customColorName.trim(),h:`hsl(${pickerHue},75%,42%)`};
-                setCColor(newC);setColorPicker(false);setCustomColorName('');
-              },
-              style:{padding:'6px 12px',borderRadius:6,border:'none',background:'#185FA5',color:'#E6F1FB',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}
-            },'Use color')
-          )
-        )
-      ),
-      // Preview + actions
-      h('div',{style:{display:'flex',alignItems:'center',gap:10}},
-        h('div',{style:{display:'flex',alignItems:'center',gap:8,flex:1,padding:'8px 12px',background:'rgba(255,255,255,.04)',borderRadius:8,border:`.5px solid ${cColor.h}30`}},
-          h('div',{style:{width:14,height:14,borderRadius:'50%',background:cColor.h,border:'1.5px solid rgba(255,255,255,.2)',flexShrink:0}}),
-          h('span',{style:{fontSize:13,color:'#e2e8f0',fontStyle:'italic'}},cNameV||'conductor name'),
-          h('span',{style:{fontSize:11,color:'#64748b',fontFamily:'monospace',marginLeft:4}},cGauge+' · '+cIns+' · '+cColor.n)
-        ),
-        h('button',{onClick:addConductor,style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#185FA5',color:'#E6F1FB',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}},'\u2713 Add Conductor'),
-        h('button',{onClick:()=>setFormMode(null),style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
-      )
-    );
+      !isTech&&h('button',{onClick:()=>delPart(p.id),style:{border:'none',background:'transparent',color:'#f87171',cursor:'pointer',fontSize:18,lineHeight:1,padding:'0 4px',flexShrink:0}},'\u00d7')
+    );};
 
-    // ── BOX KNOCKOUT FORM ────────────────────────────────────────────────────
-    // Visual box diagram: 3 KOs per side + 5 on back
-    const BoxDiagram=()=>{
-      const activeKOs=knockouts.map(k=>k.knockout_position);
-      const sideKOs={
-        'Top-L':0,'Top-C':0,'Top-R':0,
-        'Right-T':0,'Right-C':0,'Right-B':0,
-        'Bot-L':0,'Bot-C':0,'Bot-R':0,
-        'Left-T':0,'Left-C':0,'Left-B':0,
-        'Back-1':0,'Back-2':0,'Back-3':0,'Back-4':0,'Back-5':0
-      };
-      const koLabel=pos=>activeKOs.includes(pos)?knockouts.find(k=>k.knockout_position===pos)?.connector_type?.replace(' Connector','').replace(' Clamp','').slice(0,4)||'\u2713':'\u00b7';
-      const koStyle=(pos,x,y)=>{
-        const used=activeKOs.includes(pos);
-        const sel=kPos===pos;
-        return {
-          position:'absolute',left:x+'%',top:y+'%',transform:'translate(-50%,-50%)',
-          width:sel?22:18,height:sel?22:18,borderRadius:'50%',cursor:'pointer',
-          background:used?'#0F6E56':sel?'#185FA5':'rgba(255,255,255,.08)',
-          border:sel?'2px solid #63b3ed':used?'2px solid #38a169':'.5px solid #334155',
-          display:'flex',alignItems:'center',justifyContent:'center',
-          fontSize:8,color:used?'#fff':sel?'#fff':'#475569',
-          transition:'all .12s',zIndex:2,fontWeight:sel?700:400,
-          boxShadow:sel?'0 0 0 3px rgba(99,179,237,.3)':'none'
-        };
-      };
-      return h('div',{style:{position:'relative',width:'100%',paddingBottom:'72%',marginBottom:12}},
-        h('div',{style:{position:'absolute',inset:0}},
-          // Box body
-          h('div',{style:{position:'absolute',left:'18%',top:'8%',width:'64%',height:'84%',
-            border:'1.5px solid #334155',borderRadius:4,background:'rgba(255,255,255,.03)',
-            display:'flex',alignItems:'center',justifyContent:'center'}}),
-          // Back label
-          h('div',{style:{position:'absolute',left:'50%',top:'50%',transform:'translate(-50%,-50%)',
-            fontSize:10,color:'#475569',letterSpacing:'.05em',textAlign:'center',lineHeight:1.4}},'BACK',h('br'),'5 KO'),
-          // TOP knockouts
-          ...['Top-L','Top-C','Top-R'].map((p,i)=>h('div',{key:p,style:koStyle(p,29+i*21,8),onClick:()=>setKPos(kPos===p?'':p)},koLabel(p))),
-          // RIGHT knockouts
-          ...['Right-T','Right-C','Right-B'].map((p,i)=>h('div',{key:p,style:koStyle(p,82,19+i*33),onClick:()=>setKPos(kPos===p?'':p)},koLabel(p))),
-          // BOTTOM knockouts
-          ...['Bot-R','Bot-C','Bot-L'].map((p,i)=>h('div',{key:p,style:koStyle(p,71-i*21,92),onClick:()=>setKPos(kPos===p?'':p)},koLabel(p))),
-          // LEFT knockouts
-          ...['Left-B','Left-C','Left-T'].map((p,i)=>h('div',{key:p,style:koStyle(p,18,81-i*33),onClick:()=>setKPos(kPos===p?'':p)},koLabel(p))),
-          // BACK knockouts (inside the box)
-          ...['Back-TL','Back-TR','Back-C','Back-BL','Back-BR'].map((p,pos)=>{
-            // Dice-5 layout: TL(33,35), TR(55,35), C(44,50), BL(33,65), BR(55,65)
-            const diceX=[33,55,44,33,55];const diceY=[35,35,50,65,65];
-            return h('div',{key:p,style:{...koStyle(p,diceX[pos],diceY[pos]),width:16,height:16},onClick:()=>setKPos(kPos===p?'':p)},koLabel(p));
-          }),
-          // Side labels
-          h('div',{style:{position:'absolute',left:'50%',top:'1%',transform:'translateX(-50%)',fontSize:9,color:'#475569'}},'\u2191 TOP'),
-          h('div',{style:{position:'absolute',right:'1%',top:'50%',transform:'translateY(-50%) rotate(90deg)',fontSize:9,color:'#475569'}},'RIGHT \u2192'),
-          h('div',{style:{position:'absolute',left:'50%',bottom:'1%',transform:'translateX(-50%)',fontSize:9,color:'#475569'}},'\u2193 BOTTOM'),
-          h('div',{style:{position:'absolute',left:'0%',top:'50%',transform:'translateY(-50%) rotate(-90deg)',fontSize:9,color:'#475569'}},'\u2190 LEFT')
-        )
-      );
-    };
-
-    const KOForm=()=>h('div',{style:{background:'rgba(15,110,86,.06)',border:'.5px solid rgba(15,110,86,.3)',borderRadius:12,padding:16,marginTop:8}},
-      h('div',{style:{fontSize:11,color:'#64748b',marginBottom:10,fontWeight:500}},'\u25ba Click a knockout position on the box above, then select connector type'),
-      kPos&&h('div',{style:{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',background:'rgba(15,110,86,.1)',borderRadius:8,marginBottom:10,fontSize:13}},
-        h('div',{style:{width:10,height:10,borderRadius:'50%',background:'#38a169'}}),
-        h('span',{style:{color:'#e2e8f0',fontWeight:500}},kPos),h('span',{style:{color:'#64748b'}},'\u2014 select connector:')
-      ),
-      !kPos&&h('div',{style:{padding:'10px 0',color:'#64748b',fontSize:13}},'\u2190 Click a position on the diagram'),
-      kPos&&h('div',{style:{marginBottom:10}},
-        h('div',{style:{display:'flex',flexWrap:'wrap',gap:4}},
-          [...dynConns,'+ Custom'].map(c=>h(Chip,{key:c,label:c,on:kConn===c||(c==='+ Custom'&&kConn==='__new__'),
-            onClick:()=>setKConn(c==='+ Custom'?'__new__':c),col:'green'}))
-        ),
-        kConn==='__new__'&&h('input',{style:{marginTop:6,width:'100%',border:'.5px solid #334155',borderRadius:6,padding:'6px 8px',background:'rgba(255,255,255,.05)',color:'#e2e8f0',fontSize:12,outline:'none'},
-          placeholder:'Custom connector',value:kCustomConn,onChange:e=>setKCustomConn(e.target.value)})
-      ),
-      kPos&&kConn&&h('div',{style:{display:'flex',gap:8}},
-        h('button',{onClick:addKnockout,style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#0F6E56',color:'#E1F5EE',fontSize:13,cursor:'pointer'}},'\u2713 Add Knockout'),
-        h('button',{onClick:()=>{setKPos('');setFormMode(null);},style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
-      )
-    );
-
-    // ── DEVICE FORM ──────────────────────────────────────────────────────────
-    const DeviceForm=()=>h('div',{style:{background:'rgba(83,58,183,.06)',border:'.5px solid rgba(83,58,183,.3)',borderRadius:12,padding:16,marginTop:8}},
-      h('div',{style:{fontSize:11,color:'#64748b',marginBottom:8,fontWeight:500}},'\u25ba Select device to add'),
-      h('div',{style:{display:'flex',flexWrap:'wrap',gap:4,marginBottom:10}},
-        DEVICES.map(d=>h(Chip,{key:d,label:d,on:devType===d,onClick:()=>setDevType(d),col:'purple'}))
-      ),
-      h('div',{style:{display:'flex',gap:8}},
-        h('button',{onClick:addDevice,disabled:!devType,style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#533AB7',color:'#EEEDFE',fontSize:13,cursor:'pointer'}},'\u2713 Add Device'),
-        h('button',{onClick:()=>setFormMode(null),style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
-      )
-    );
-
-    // ── COVER FORM ───────────────────────────────────────────────────────────
-    const CoverForm=()=>h('div',{style:{background:'rgba(186,117,23,.06)',border:'.5px solid rgba(186,117,23,.3)',borderRadius:12,padding:16,marginTop:8}},
-      h('div',{style:{fontSize:11,color:'#64748b',marginBottom:8,fontWeight:500}},'\u25ba Cover, mud ring, or extension'),
-      h('div',{style:{display:'flex',flexWrap:'wrap',gap:4,marginBottom:10}},
-        COVERS.map(c=>h(Chip,{key:c,label:c,on:covType===c,onClick:()=>setCovType(c),col:'amber'}))
-      ),
-      h('div',{style:{display:'flex',gap:8}},
-        h('button',{onClick:addCover,disabled:!covType,style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#BA7517',color:'#FAEEDA',fontSize:13,cursor:'pointer'}},'\u2713 Add Cover/Ring'),
-        h('button',{onClick:()=>setFormMode(null),style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
-      )
-    );
-
-    // ── CONDUCTOR ROW ────────────────────────────────────────────────────────
-    const CondRow=({p})=>{
-      const colorH=p.color_hex||WIRE_COLORS.find(c=>c.n===p.wire_color)?.h||'#888';
-      return h('div',{style:{
-        borderRadius:8,marginBottom:4,padding:'8px 12px',
-        background:`linear-gradient(135deg, ${colorH}18 0%, rgba(255,255,255,.03) 100%)`,
-        border:`.5px solid ${colorH}40`,
-        display:'flex',alignItems:'center',gap:10
-      }},
-        h('div',{style:{width:16,height:16,borderRadius:'50%',background:colorH,border:'2px solid rgba(255,255,255,.2)',flexShrink:0,boxShadow:'0 2px 4px rgba(0,0,0,.4)'}}),
-        h('div',{style:{flex:1,minWidth:0}},
-          h('div',{style:{fontWeight:600,fontSize:13,color:'#e2e8f0',marginBottom:2}},p.name),
-          h('div',{style:{display:'flex',gap:5,flexWrap:'wrap',alignItems:'center'}},
-            h('span',{style:{padding:'1px 7px',borderRadius:4,background:'rgba(24,95,165,.2)',border:'.5px solid rgba(24,95,165,.4)',fontSize:11,color:'#93c5fd',fontFamily:'monospace'}},p.gauge||'—'),
-            h('span',{style:{padding:'1px 7px',borderRadius:4,background:'rgba(15,110,86,.2)',border:'.5px solid rgba(15,110,86,.4)',fontSize:11,color:'#6ee7b7',fontFamily:'monospace'}},p.insulation_type||'—'),
-            h('span',{style:{padding:'1px 7px',borderRadius:4,background:`${colorH}22`,border:`.5px solid ${colorH}50`,fontSize:11,color:`${colorH}`}},p.wire_color||'—'),
-            p.footage&&h('span',{style:{padding:'1px 7px',borderRadius:4,background:'rgba(255,255,255,.06)',border:'.5px solid #334155',fontSize:11,color:'#94a3b8'}},p.footage+"'")
-          )
-        ),
-        !isTech&&h('button',{onClick:()=>delPart(p.id),style:{border:'none',background:'transparent',color:'#f87171',cursor:'pointer',fontSize:18,lineHeight:1,padding:'0 4px',flexShrink:0}},'\u00d7')
-      );
+    // Build print HTML
+    const printSheet=()=>{
+      const totFt=conductors.reduce((s,p)=>s+(parseFloat(p.footage)||0),0);
+      const grps={};conductors.forEach(c=>{const k=(c.gauge||'?')+'|'+(c.wire_color||'?')+'|'+(c.insulation_type||'?');if(!grps[k])grps[k]={gauge:c.gauge,color:c.wire_color,ins:c.insulation_type,hex:c.color_hex||'#888',count:0,ft:0};grps[k].count++;grps[k].ft+=(parseFloat(c.footage)||0);});
+      const sR=Object.values(grps).map(g=>'<tr><td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:'+g.hex+';display:inline-block"></span>'+g.color+'</span></td><td style="font-family:monospace">'+g.gauge+'</td><td>'+g.ins+'</td><td>'+g.count+'</td><td style="font-weight:700">'+( g.ft>0?g.ft+" ft":'--')+'</td></tr>').join('');
+      const cR=conductors.map(c=>'<tr><td>'+c.name+'</td><td style="font-family:monospace">'+c.gauge+'</td><td>'+c.insulation_type+'</td><td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:'+(c.color_hex||'#888')+';display:inline-block;border:1px solid rgba(0,0,0,.15)"></span>'+(c.wire_color||'')+'</span></td><td>'+(c.footage?c.footage+"'":'--')+'</td></tr>').join('');
+      const koR=knockouts.map(k=>'<tr><td>'+k.knockout_position+'</td><td>'+(k.connector_type||'--')+'</td></tr>').join('');
+      const dvR=[...devices,...covers].map(d=>'<tr><td>'+(d.device_type||d.cover_type||d.name)+'</td><td>'+(d.part_type==='device'?'Device':'Cover/Ring')+'</td></tr>').join('');
+      const mR=materials.map(m=>'<tr><td>'+m.name+'</td><td>'+(m.quantity||1)+' '+(m.unit||'ea')+'</td><td>'+(m.unit_cost?'$'+parseFloat(m.unit_cost).toFixed(2):'--')+'</td></tr>').join('');
+      const typ=asmType==='wire_spool'?'Wire Spool':asmType==='wall_box'?'Wall Box':asmType;
+      const w=window.open('','_blank');
+      w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+name+'</title><style>body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px;max-width:820px;margin:0 auto}h1{font-size:20px;margin:0 0 2px}h2{font-size:11px;font-weight:700;margin:18px 0 5px;border-bottom:2px solid #222;padding-bottom:2px;text-transform:uppercase;letter-spacing:.07em}table{width:100%;border-collapse:collapse}th{text-align:left;border-bottom:2px solid #333;padding:4px 8px;font-size:10px;font-weight:700;text-transform:uppercase}td{padding:5px 8px;border-bottom:1px solid #eee}tr:nth-child(even) td{background:#f8f8f8}.meta{color:#555;font-size:11px;margin:4px 0 18px}.badge{display:inline-block;padding:2px 8px;border-radius:3px;font-weight:700;font-size:10px;text-transform:uppercase}.wire{background:#dbeafe;color:#1e3a8a}.box{background:#d1fae5;color:#064e3b}.custom{background:#f3f4f6;color:#374151}@media print{.np{display:none}}</style></head><body>');
+      w.document.write('<div class="np" style="margin-bottom:16px"><button onclick="window.print()" style="padding:7px 18px;border:1.5px solid #333;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600">Print / Save PDF</button></div>');
+      w.document.write('<h1>'+name+'</h1><div class="meta"><span class="badge '+(asmType==='wire_spool'?'wire':asmType==='wall_box'?'box':'custom')+'">'+typ+'</span>'+(desc?' &mdash; '+desc:'')+' &nbsp;&nbsp; '+new Date().toLocaleDateString()+'</div>');
+      if(conductors.length){w.document.write('<h2>Wire Summary &mdash; '+conductors.length+' conductors &middot; '+totFt+' ft total</h2><table><thead><tr><th>Color</th><th>Gauge</th><th>Insulation</th><th>Count</th><th>Total Footage</th></tr></thead><tbody>'+sR+'</tbody></table>');w.document.write('<h2 style="color:#888;font-weight:400;border:none;margin-top:4px">Individual conductors</h2><table><thead><tr><th>Name</th><th>Gauge</th><th>Insulation</th><th>Color</th><th>Footage</th></tr></thead><tbody>'+cR+'</tbody></table>');}
+      if(knockouts.length)w.document.write('<h2>Knockouts ('+knockouts.length+')</h2><table><thead><tr><th>Position</th><th>Connector</th></tr></thead><tbody>'+koR+'</tbody></table>');
+      if(devices.length+covers.length)w.document.write('<h2>Devices &amp; Covers</h2><table><thead><tr><th>Item</th><th>Type</th></tr></thead><tbody>'+dvR+'</tbody></table>');
+      if(materials.length)w.document.write('<h2>Components</h2><table><thead><tr><th>Name</th><th>Qty</th><th>Cost</th></tr></thead><tbody>'+mR+'</tbody></table>');
+      w.document.write('</body></html>');w.document.close();
     };
 
     return h('div',{className:'modal-backdrop'},
       h('div',{className:'modal modal-wide',style:{maxWidth:860,maxHeight:'93vh',display:'flex',flexDirection:'column'}},
-
-        // Header
         h('div',{className:'modal-header'},
           h('div',{style:{display:'flex',alignItems:'center',gap:10}},
             h('h3',null,isEdit?'Edit Assembly':'New Assembly'),
@@ -13447,56 +13669,47 @@ function Assemblies({isTech=false}){
           ),
           h('button',{className:'icon-btn',onClick:onClose},h(IPlus,{style:{transform:'rotate(45deg)'}}))
         ),
-
         h('div',{className:'modal-body',style:{flex:1,overflowY:'auto'}},
-
-          // ── Info bar ──────────────────────────────────────────────────────
-          h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:12}},
+          // Info
+          h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}},
             h('div',null,
-              h('div',{style:{fontSize:11,color:'#64748b',marginBottom:5,fontWeight:500}},'\u25ba Assembly name *'),
-              h('input',{style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'8px 11px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:14,outline:'none'},
-                placeholder:'e.g. Panel A Main Feed Spool',value:name,onChange:e=>setName(e.target.value)})
+              h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4,fontWeight:500}},'\u25ba Name *'),
+              h('input',{value:name,onChange:e=>setName(e.target.value),placeholder:'e.g. Panel A Feed Spool',style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'8px 11px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:14,outline:'none'}})
             ),
             h('div',null,
-              h('div',{style:{fontSize:11,color:'#64748b',marginBottom:5,fontWeight:500}},'\u25ba Type'),
+              h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4,fontWeight:500}},'\u25ba Type'),
               h('div',{style:{display:'flex',gap:4,flexWrap:'wrap'}},
-                h(Chip,{label:'Wire Spool',on:asmType==='wire_spool',onClick:()=>setAsmType('wire_spool'),col:'blue'}),
-                h(Chip,{label:'Wall Box',on:asmType==='wall_box',onClick:()=>setAsmType('wall_box'),col:'green'}),
-                h(Chip,{label:'Custom',on:asmType==='custom'||!['wire_spool','wall_box'].includes(asmType),onClick:()=>setAsmType('custom'),col:'blue'}),
-                ...existingTypes.filter(t=>!['wire_spool','wall_box','custom'].includes(t)).map(t=>h(Chip,{key:t,label:t,on:asmType===t,onClick:()=>setAsmType(t),col:'blue'}))
+                h(AsmChip,{label:'Wire Spool',on:asmType==='wire_spool',onClick:()=>setAsmType('wire_spool'),col:'blue'}),
+                h(AsmChip,{label:'Wall Box',on:asmType==='wall_box',onClick:()=>setAsmType('wall_box'),col:'green'}),
+                h(AsmChip,{label:'Custom',on:!['wire_spool','wall_box'].includes(asmType),onClick:()=>setAsmType('custom'),col:'blue'}),
+                ...existingTypes.filter(t=>!['wire_spool','wall_box','custom'].includes(t)).map(t=>h(AsmChip,{key:t,label:t,on:asmType===t,onClick:()=>setAsmType(t),col:'blue'}))
               )
             )
           ),
-          h('input',{style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'6px 10px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:12,outline:'none',marginBottom:12},
-            placeholder:'Description (optional)',value:desc,onChange:e=>setDesc(e.target.value)}),
-
+          h('input',{value:desc,onChange:e=>setDesc(e.target.value),placeholder:'Description (optional)',style:{width:'100%',border:'.5px solid #334155',borderRadius:7,padding:'6px 10px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:12,outline:'none',marginBottom:12}}),
           err&&h('div',{className:'alert alert-danger',style:{marginBottom:10}},err),
 
-          // Create button (before save)
           !savedId&&h('div',{style:{textAlign:'center',padding:16}},
-            h('button',{onClick:saveAssembly,disabled:saving||!name.trim(),
-              style:{padding:'9px 28px',borderRadius:8,border:'none',background:'#185FA5',color:'#E6F1FB',fontSize:14,cursor:'pointer'}},
-              saving?'Creating\u2026':'Create Assembly \u2014 then add parts')
+            h('button',{onClick:saveAssembly,disabled:saving||!name.trim(),style:{padding:'9px 28px',borderRadius:8,border:'none',background:'#185FA5',color:'#E6F1FB',fontSize:14,cursor:'pointer'}},saving?'Creating...':'Create Assembly \u2014 then add parts')
           ),
 
-          // Tabs + content
           savedId&&h('div',null,
+            // Tabs
             h('div',{style:{display:'flex',gap:2,borderBottom:'.5px solid #1e293b',marginBottom:14}},
-              ['parts','plan'].map(tab=>h('button',{key:tab,onClick:()=>setActiveTab(tab),
+              ['parts','plan'].map(t=>h('button',{key:t,onClick:()=>setActiveTab(t),
                 style:{padding:'6px 16px',borderRadius:'6px 6px 0 0',border:'none',
-                  borderBottom:activeTab===tab?'2px solid #185FA5':'2px solid transparent',
-                  background:activeTab===tab?'rgba(24,95,165,.08)':'transparent',
-                  color:activeTab===tab?'#93c5fd':'#64748b',fontSize:12,cursor:'pointer'}},
-                tab==='parts'?'Components'+(parts.length?' ('+parts.length+')':''):
-                  'Plan'+(annotations.length?' ('+annotations.length+')':'')))
+                  borderBottom:activeTab===t?'2px solid #185FA5':'2px solid transparent',
+                  background:activeTab===t?'rgba(24,95,165,.08)':'transparent',
+                  color:activeTab===t?'#93c5fd':'#64748b',fontSize:12,cursor:'pointer'}},
+                t==='parts'?'Components'+(parts.length?' ('+parts.length+')':''):'Plan'+(annotations.length?' ('+annotations.length+')':'')))
             ),
 
-            // ── PARTS TAB ─────────────────────────────────────────────────
+            // ── PARTS TAB ───────────────────────────────────────────────────
             activeTab==='parts'&&h('div',null,
 
-              // Wire spool view
+              // ── WIRE SPOOL ─────────────────────────────────────────────────
               isWire&&h('div',null,
-                // Summary bar
+                // Grouped summary
                 conductors.length>0&&h('div',{style:{marginBottom:12}},
                   h('div',{style:{display:'flex',gap:6,flexWrap:'wrap',padding:'8px 14px',background:'rgba(24,95,165,.07)',border:'.5px solid rgba(24,95,165,.2)',borderRadius:'8px 8px 0 0',alignItems:'center',borderBottom:'none'}},
                     h('span',{style:{fontSize:12,color:'#64748b',fontWeight:500}},conductors.length+' conductors'),
@@ -13504,46 +13717,48 @@ function Assemblies({isTech=false}){
                     h('span',{style:{fontSize:11,color:'#475569',marginLeft:'auto'}},'\u25bc by type')
                   ),
                   h('div',{style:{background:'rgba(255,255,255,.02)',border:'.5px solid rgba(24,95,165,.2)',borderRadius:'0 0 8px 8px',overflow:'hidden'}},
-                    (()=>{const grps={};conductors.forEach(c=>{const k=(c.gauge||'?')+'|'+(c.wire_color||'?')+'|'+(c.insulation_type||'?');if(!grps[k])grps[k]={gauge:c.gauge,color:c.wire_color,ins:c.insulation_type,hex:c.color_hex||'#888',count:0,ft:0};grps[k].count++;grps[k].ft+=(parseFloat(c.footage)||0);});
-                    return Object.values(grps).map((g,i)=>h('div',{key:i,style:{display:'flex',alignItems:'center',gap:10,padding:'7px 14px',borderTop:i===0?'none':'.5px solid rgba(24,95,165,.1)',background:i%2===0?'transparent':'rgba(255,255,255,.01)'}},
-                      h('div',{style:{width:13,height:13,borderRadius:'50%',background:g.hex,border:'1.5px solid rgba(255,255,255,.15)',flexShrink:0}}),
-                      h('span',{style:{fontFamily:'monospace',fontSize:12,color:'#93c5fd',minWidth:60}},g.gauge||'\u2014'),
-                      h('span',{style:{fontFamily:'monospace',fontSize:12,color:'#6ee7b7',minWidth:56}},g.ins||'\u2014'),
-                      h('span',{style:{fontSize:12,color:'#94a3b8',flex:1}},g.color||'\u2014'),
-                      h('span',{style:{fontSize:12,color:'#64748b',marginRight:8}},g.count+' wire'+(g.count!==1?'s':'')),
-                      h('span',{style:{fontWeight:700,fontSize:13,color:'#e2e8f0',minWidth:60,textAlign:'right'}},g.ft>0?g.ft+' ft':'\u2014')
-                    ));})())
+                    (()=>{
+                      const grps={};conductors.forEach(c=>{const k=(c.gauge||'?')+'|'+(c.wire_color||'?')+'|'+(c.insulation_type||'?');if(!grps[k])grps[k]={gauge:c.gauge,color:c.wire_color,ins:c.insulation_type,hex:c.color_hex||'#888',count:0,ft:0};grps[k].count++;grps[k].ft+=(parseFloat(c.footage)||0);});
+                      return Object.values(grps).map((g,i)=>h('div',{key:i,style:{display:'flex',alignItems:'center',gap:10,padding:'7px 14px',borderTop:i===0?'none':'.5px solid rgba(24,95,165,.1)',background:i%2===0?'transparent':'rgba(255,255,255,.01)'}},
+                        h('div',{style:{width:13,height:13,borderRadius:'50%',background:g.hex,border:'1.5px solid rgba(255,255,255,.15)',flexShrink:0}}),
+                        h('span',{style:{fontFamily:'monospace',fontSize:12,color:'#93c5fd',minWidth:60}},g.gauge||'\u2014'),
+                        h('span',{style:{fontFamily:'monospace',fontSize:12,color:'#6ee7b7',minWidth:56}},g.ins||'\u2014'),
+                        h('span',{style:{fontSize:12,color:'#94a3b8',flex:1}},g.color||'\u2014'),
+                        h('span',{style:{fontSize:12,color:'#64748b',marginRight:8}},g.count+' wire'+(g.count!==1?'s':'')),
+                        h('span',{style:{fontWeight:700,fontSize:13,color:'#e2e8f0',minWidth:60,textAlign:'right'}},g.ft>0?g.ft+' ft':'\u2014')
+                      ));
+                    })()
+                  )
                 ),
-                // Conductors
-                conductors.map(p=>h(CondRow,{key:p.id,p})),
-                conductors.length===0&&formMode!=='conductor'&&h('div',{style:{padding:'16px 0',textAlign:'center',color:'#475569',fontSize:13}},'No conductors yet — add your first one below'),
-                formMode==='conductor'?h(WireForm):
-                  !isTech&&h('button',{onClick:()=>setFormMode('conductor'),style:{width:'100%',marginTop:6,padding:9,border:'.5px dashed #334155',borderRadius:8,background:'rgba(24,95,165,.04)',color:'#64748b',fontSize:12,cursor:'pointer'}},
-                    '+ Add conductor')
+                conductors.map(p=>h(CondCard,{key:p.id,p})),
+                conductors.length===0&&formMode!=='conductor'&&h('div',{style:{padding:'16px 0',textAlign:'center',color:'#475569',fontSize:13}},'No conductors yet'),
+                formMode==='conductor'
+                  ?h(WireCondForm,{gauge:cGauge,setGauge:setCGauge,ins:cIns,setIns:setCIns,color:cColor,setColor:setCColor,allColors,dynGauges,onAdd:addConductor,onCancel:()=>setFormMode(null)})
+                  :!isTech&&h('button',{onClick:()=>setFormMode('conductor'),style:{width:'100%',marginTop:4,padding:9,border:'.5px dashed #334155',borderRadius:8,background:'rgba(24,95,165,.04)',color:'#64748b',fontSize:12,cursor:'pointer'}},
+                      '+ Add conductor')
               ),
 
-              // Wall box view
+              // ── WALL BOX ───────────────────────────────────────────────────
               isBox&&h('div',null,
-                // Box diagram
-                h('div',{style:{display:'grid',gridTemplateColumns:'280px 1fr',gap:14,alignItems:'start'}},
+                h('div',{style:{display:'grid',gridTemplateColumns:'260px 1fr',gap:14,alignItems:'start',marginBottom:10}},
                   h('div',null,
-                    h('div',{style:{fontSize:11,color:'#64748b',marginBottom:6,fontWeight:500}},'\u25ba Click knockouts to select'),
-                    h(BoxDiagram)
+                    h('div',{style:{fontSize:11,color:'#64748b',marginBottom:6,fontWeight:500}},'\u25ba Click a knockout to configure it'),
+                    h(BoxDiagram,{knockouts,selPos:kPos,onSelect:pos=>{setKPos(pos);if(pos)setFormMode('knockout');}})
                   ),
                   h('div',null,
-                    // Knockouts list
+                    // Configured KOs
                     knockouts.length>0&&h('div',{style:{marginBottom:10}},
                       h('div',{style:{fontSize:11,color:'#6ee7b7',fontWeight:500,marginBottom:6}},knockouts.length+' knockout'+(knockouts.length!==1?'s':'')+' configured'),
                       knockouts.map(p=>h('div',{key:p.id,style:{display:'flex',alignItems:'center',gap:8,padding:'6px 10px',background:'rgba(15,110,86,.08)',border:'.5px solid rgba(15,110,86,.2)',borderRadius:6,marginBottom:4}},
                         h('div',{style:{width:8,height:8,borderRadius:'50%',background:'#38a169',flexShrink:0}}),
-                        h('span',{style:{fontWeight:500,fontSize:12,color:'#e2e8f0'}},p.knockout_position),
+                        h('span',{style:{fontWeight:500,fontSize:12,color:'#e2e8f0',minWidth:60}},p.knockout_position),
                         h('span',{style:{fontSize:11,color:'#64748b',flex:1}},p.connector_type||'—'),
                         !isTech&&h('button',{onClick:()=>delPart(p.id),style:{border:'none',background:'transparent',color:'#f87171',cursor:'pointer',fontSize:14}},'\u00d7')
                       ))
                     ),
                     // Devices
                     devices.length>0&&h('div',{style:{marginBottom:10}},
-                      h('div',{style:{fontSize:11,color:'#c4b5fd',fontWeight:500,marginBottom:6}},'Devices'),
+                      h('div',{style:{fontSize:11,color:'#c4b5fd',fontWeight:500,marginBottom:6}},'\u25cb Devices'),
                       devices.map(p=>h('div',{key:p.id,style:{display:'flex',alignItems:'center',gap:8,padding:'5px 10px',background:'rgba(83,58,183,.08)',border:'.5px solid rgba(83,58,183,.2)',borderRadius:6,marginBottom:4}},
                         h('span',{style:{fontSize:12,color:'#e2e8f0',flex:1}},p.device_type||p.name),
                         !isTech&&h('button',{onClick:()=>delPart(p.id),style:{border:'none',background:'transparent',color:'#f87171',cursor:'pointer',fontSize:14}},'\u00d7')
@@ -13551,7 +13766,7 @@ function Assemblies({isTech=false}){
                     ),
                     // Covers
                     covers.length>0&&h('div',{style:{marginBottom:10}},
-                      h('div',{style:{fontSize:11,color:'#fcd34d',fontWeight:500,marginBottom:6}},'Covers & Rings'),
+                      h('div',{style:{fontSize:11,color:'#fcd34d',fontWeight:500,marginBottom:6}},'\u25a1 Covers & Rings'),
                       covers.map(p=>h('div',{key:p.id,style:{display:'flex',alignItems:'center',gap:8,padding:'5px 10px',background:'rgba(186,117,23,.08)',border:'.5px solid rgba(186,117,23,.2)',borderRadius:6,marginBottom:4}},
                         h('span',{style:{fontSize:12,color:'#e2e8f0',flex:1}},p.cover_type||p.name),
                         !isTech&&h('button',{onClick:()=>delPart(p.id),style:{border:'none',background:'transparent',color:'#f87171',cursor:'pointer',fontSize:14}},'\u00d7')
@@ -13559,21 +13774,46 @@ function Assemblies({isTech=false}){
                     )
                   )
                 ),
-                // Box action buttons
-                !isTech&&formMode===null&&h('div',{style:{display:'flex',gap:6,marginTop:10}},
-                  h('button',{onClick:()=>setFormMode('knockout'),style:{flex:1,padding:'7px 10px',borderRadius:8,border:'.5px dashed rgba(15,110,86,.5)',background:'rgba(15,110,86,.04)',color:'#64748b',fontSize:12,cursor:'pointer'}},
-                    '+ Knockout'),
-                  h('button',{onClick:()=>setFormMode('device'),style:{flex:1,padding:'7px 10px',borderRadius:8,border:'.5px dashed rgba(83,58,183,.5)',background:'rgba(83,58,183,.04)',color:'#64748b',fontSize:12,cursor:'pointer'}},
-                    '+ Device'),
-                  h('button',{onClick:()=>setFormMode('cover'),style:{flex:1,padding:'7px 10px',borderRadius:8,border:'.5px dashed rgba(186,117,23,.5)',background:'rgba(186,117,23,.04)',color:'#64748b',fontSize:12,cursor:'pointer'}},
-                    '+ Cover / Ring')
+                // KO connector selector (shows when a position is selected)
+                formMode==='knockout'&&kPos&&h('div',{style:{background:'rgba(15,110,86,.06)',border:'.5px solid rgba(15,110,86,.3)',borderRadius:12,padding:14,marginBottom:8}},
+                  h('div',{style:{display:'flex',alignItems:'center',gap:8,padding:'7px 12px',background:'rgba(15,110,86,.1)',borderRadius:8,marginBottom:10,fontSize:13}},
+                    h('div',{style:{width:10,height:10,borderRadius:'50%',background:'#38a169'}}),
+                    h('span',{style:{color:'#e2e8f0',fontWeight:500}},kPos),
+                    h('span',{style:{color:'#64748b'}},'\u2014 select connector:')
+                  ),
+                  h('div',{style:{display:'flex',flexWrap:'wrap',gap:4,marginBottom:10}},
+                    [...dynConns,'+ Custom'].map(c=>h(AsmChip,{key:c,label:c,on:kConn===c||(c==='+ Custom'&&kConn==='__new__'),onClick:()=>setKConn(c==='+ Custom'?'__new__':c),col:'green'}))
+                  ),
+                  kConn==='__new__'&&h('input',{value:kCustomConn,onChange:e=>setKCustomConn(e.target.value),placeholder:'Custom connector',style:{width:'100%',border:'.5px solid #334155',borderRadius:6,padding:'6px 8px',background:'rgba(255,255,255,.05)',color:'#e2e8f0',fontSize:12,outline:'none',marginBottom:10}}),
+                  h('div',{style:{display:'flex',gap:8}},
+                    h('button',{onClick:addKnockout,style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#0F6E56',color:'#E1F5EE',fontSize:13,cursor:'pointer'}},'\u2713 Save Knockout'),
+                    h('button',{onClick:()=>{setKPos('');setFormMode(null);},style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
+                  )
                 ),
-                formMode==='knockout'&&h(KOForm),
-                formMode==='device'&&h(DeviceForm),
-                formMode==='cover'&&h(CoverForm)
+                // Box action buttons
+                formMode===null&&!isTech&&h('div',{style:{display:'flex',gap:6}},
+                  h('button',{onClick:()=>setFormMode('device'),style:{flex:1,padding:'7px 10px',borderRadius:8,border:'.5px dashed rgba(83,58,183,.5)',background:'rgba(83,58,183,.04)',color:'#94a3b8',fontSize:12,cursor:'pointer'}},'\u25cb + Device'),
+                  h('button',{onClick:()=>setFormMode('cover'),style:{flex:1,padding:'7px 10px',borderRadius:8,border:'.5px dashed rgba(186,117,23,.5)',background:'rgba(186,117,23,.04)',color:'#94a3b8',fontSize:12,cursor:'pointer'}},'\u25a1 + Cover/Ring')
+                ),
+                formMode==='device'&&h('div',{style:{background:'rgba(83,58,183,.06)',border:'.5px solid rgba(83,58,183,.3)',borderRadius:12,padding:14}},
+                  h('div',{style:{fontSize:11,color:'#64748b',marginBottom:8,fontWeight:500}},'Select device'),
+                  h('div',{style:{display:'flex',flexWrap:'wrap',gap:4,marginBottom:10}},ASM_DEVICES.map(d=>h(AsmChip,{key:d,label:d,on:devType===d,onClick:()=>setDevType(d),col:'purple'}))),
+                  h('div',{style:{display:'flex',gap:8}},
+                    h('button',{onClick:addDevice,disabled:!devType,style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#533AB7',color:'#EEEDFE',fontSize:13,cursor:'pointer'}},'\u2713 Add'),
+                    h('button',{onClick:()=>setFormMode(null),style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
+                  )
+                ),
+                formMode==='cover'&&h('div',{style:{background:'rgba(186,117,23,.06)',border:'.5px solid rgba(186,117,23,.3)',borderRadius:12,padding:14}},
+                  h('div',{style:{fontSize:11,color:'#64748b',marginBottom:8,fontWeight:500}},'Select cover, mud ring, or extension'),
+                  h('div',{style:{display:'flex',flexWrap:'wrap',gap:4,marginBottom:10}},ASM_COVERS.map(c=>h(AsmChip,{key:c,label:c,on:covType===c,onClick:()=>setCovType(c),col:'amber'}))),
+                  h('div',{style:{display:'flex',gap:8}},
+                    h('button',{onClick:addCover,disabled:!covType,style:{padding:'7px 16px',borderRadius:8,border:'none',background:'#BA7517',color:'#FAEEDA',fontSize:13,cursor:'pointer'}},'\u2713 Add'),
+                    h('button',{onClick:()=>setFormMode(null),style:{padding:'7px 12px',borderRadius:8,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
+                  )
+                )
               ),
 
-              // Generic / custom view
+              // ── GENERIC / CUSTOM ───────────────────────────────────────────
               !isWire&&!isBox&&h('div',null,
                 materials.map(p=>h('div',{key:p.id,style:{display:'flex',alignItems:'center',gap:8,padding:'7px 0',borderBottom:'.5px solid #1e293b'}},
                   h('div',{style:{flex:1,fontWeight:500,fontSize:13,color:'#e2e8f0'}},p.name),
@@ -13581,105 +13821,45 @@ function Assemblies({isTech=false}){
                   p.unit_cost&&h('span',{style:{fontSize:12,color:'#64748b'}},'$'+parseFloat(p.unit_cost).toFixed(2)),
                   !isTech&&h('button',{onClick:()=>delPart(p.id),style:{border:'none',background:'transparent',color:'#f87171',cursor:'pointer',fontSize:16}},'\u00d7')
                 )),
-                !isTech&&h('button',{onClick:()=>setFormMode('part'),style:{width:'100%',marginTop:6,padding:9,border:'.5px dashed #334155',borderRadius:8,background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'+ Add component'),
-                formMode==='part'&&h('div',{style:{background:'rgba(255,255,255,.03)',border:'.5px solid #334155',borderRadius:10,padding:14,marginTop:8}},
-                  h('div',{style:{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:8,marginBottom:10}},
-                    h('div',null,h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4}},'Name *'),
-                      h('input',{style:{width:'100%',border:'.5px solid #334155',borderRadius:6,padding:'6px 8px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:12,outline:'none'},
-                        defaultValue:'',onChange:e=>{pNameRef.current=e.target.value;setPNameV(e.target.value);}})),
-                    h('div',null,h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4}},'Qty'),
-                      h('input',{type:'number',step:'0.01',style:{width:'100%',border:'.5px solid #334155',borderRadius:6,padding:'6px 8px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:12,outline:'none'},
-                        defaultValue:'1',onChange:e=>pQtyRef.current=e.target.value})),
-                    h('div',null,h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4}},'Unit'),
-                      h('select',{style:{width:'100%',border:'.5px solid #334155',borderRadius:6,padding:'5px 8px',background:'#0f172a',color:'#e2e8f0',fontSize:12,outline:'none'},
-                        value:pUnit,onChange:e=>setPUnit(e.target.value)},MAT_UNITS.map(u=>h('option',{key:u,value:u},u)))),
-                    h('div',null,h('div',{style:{fontSize:11,color:'#64748b',marginBottom:4}},'Cost'),
-                      h('input',{type:'number',step:'0.01',style:{width:'100%',border:'.5px solid #334155',borderRadius:6,padding:'6px 8px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:12,outline:'none'},
-                        placeholder:'0.00',onChange:e=>pCostRef.current=e.target.value}))
-                  ),
-                  h('div',{style:{display:'flex',gap:8}},
-                    h('button',{onClick:addPart,disabled:!pNameV.trim(),style:{padding:'6px 14px',borderRadius:7,border:'none',background:'#185FA5',color:'#E6F1FB',fontSize:12,cursor:'pointer'}},'\u2713 Add'),
-                    h('button',{onClick:()=>setFormMode(null),style:{padding:'6px 10px',borderRadius:7,border:'.5px solid #334155',background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'Cancel')
-                  )
-                )
+                !isTech&&h('button',{onClick:()=>setFormMode('part'),style:{width:'100%',marginTop:6,padding:9,border:'.5px dashed #334155',borderRadius:8,background:'transparent',color:'#64748b',fontSize:12,cursor:'pointer'}},'+ Add component')
               )
             ),
 
-            // ── PLAN TAB ──────────────────────────────────────────────────
+            // ── PLAN TAB ─────────────────────────────────────────────────────
             activeTab==='plan'&&h('div',null,
               h('div',{style:{display:'flex',gap:8,marginBottom:10,alignItems:'center',flexWrap:'wrap'}},
                 !planData
                   ?h('label',{style:{display:'inline-flex',alignItems:'center',gap:6,padding:'7px 14px',border:'.5px solid #334155',borderRadius:8,fontSize:12,color:'#64748b',cursor:'pointer'}},
                       h(IDownload),' Upload plan / image / PDF',
-                      h('input',{type:'file',accept:'.pdf,.png,.jpg,.jpeg',style:{display:'none'},onChange:e=>{
-                        const file=e.target.files[0];if(!file)return;
-                        const r=new FileReader();r.onload=ev=>{setPlanData(ev.target.result);setPlanFilename(file.name);};r.readAsDataURL(file);
-                      }}))
+                      h('input',{type:'file',accept:'.pdf,.png,.jpg,.jpeg',style:{display:'none'},onChange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{setPlanData(ev.target.result);setPlanFilename(f.name);};r.readAsDataURL(f);}}))
                   :h('div',{style:{display:'flex',gap:8,alignItems:'center',flexWrap:'wrap'}},
                       h('span',{style:{fontSize:12,color:'#64748b'}},planFilename),
-                      h('button',{onClick:()=>{setPlanData(null);setPlanFilename(null);setAnnotations([]);},
-                        style:{fontSize:11,padding:'3px 8px',border:'.5px solid #334155',borderRadius:4,background:'transparent',color:'#f87171',cursor:'pointer'}},'\u00d7 Remove'),
-                      h('button',{onClick:()=>setAddingPin(!addingPin),
-                        style:{fontSize:11,padding:'5px 12px',borderRadius:6,border:addingPin?'none':'.5px solid #334155',
-                          background:addingPin?'#185FA5':'transparent',color:addingPin?'#E6F1FB':'#64748b',cursor:'pointer'}},
-                        addingPin?'\u271a Click plan to place\u2026':'\u271a Add location marker')
+                      h('button',{onClick:()=>{setPlanData(null);setPlanFilename(null);setAnnotations([]);},style:{fontSize:11,padding:'3px 8px',border:'.5px solid #334155',borderRadius:4,background:'transparent',color:'#f87171',cursor:'pointer'}},'\u00d7 Remove'),
+                      h('button',{onClick:()=>setAddingPin(!addingPin),style:{fontSize:11,padding:'5px 12px',borderRadius:6,border:addingPin?'none':'.5px solid #334155',background:addingPin?'#185FA5':'transparent',color:addingPin?'#E6F1FB':'#64748b',cursor:'pointer'}},addingPin?'\u271a Click to place\u2026':'\u271a Add marker')
                     )
               ),
               planData&&h('div',{style:{position:'relative',border:'.5px solid #334155',borderRadius:8,overflow:'hidden',cursor:addingPin?'crosshair':'default'},
-                onClick:e=>{
-                  if(!addingPin)return;
-                  const rect=e.currentTarget.getBoundingClientRect();
-                  const x=Math.round((e.clientX-rect.left)/rect.width*100);
-                  const y=Math.round((e.clientY-rect.top)/rect.height*100);
-                  const id='pin-'+Date.now();
-                  setAnnotations(a=>[...a,{id,x,y,label:'',note:''}]);
-                  setSelPin(id);setAddingPin(false);
-                }},
+                onClick:e=>{if(!addingPin)return;const rect=e.currentTarget.getBoundingClientRect();const x=Math.round((e.clientX-rect.left)/rect.width*100);const y=Math.round((e.clientY-rect.top)/rect.height*100);const id='pin-'+Date.now();setAnnotations(a=>[...a,{id,x,y,label:'',note:''}]);setSelPin(id);setAddingPin(false);}},
                 planData.startsWith('data:application/pdf')
                   ?h('div',{style:{padding:24,textAlign:'center',fontSize:12,color:'#64748b'}},h('a',{href:planData,download:planFilename,style:{color:'#93c5fd'}},'\ud83d\udcce '+planFilename))
                   :h('img',{src:planData,style:{width:'100%',display:'block',pointerEvents:'none'}}),
                 annotations.map((ann,i)=>h('div',{key:ann.id,style:{position:'absolute',left:ann.x+'%',top:ann.y+'%',transform:'translate(-50%,-50%)',zIndex:10}},
-                  h('div',{onClick:e=>{e.stopPropagation();setSelPin(ann.id===selPin?null:ann.id);},
-                    style:{width:24,height:24,borderRadius:'50%',background:'rgba(24,95,165,.92)',border:'2px solid #fff',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:'#fff',cursor:'pointer',boxShadow:'0 2px 8px rgba(0,0,0,.6)'}},i+1),
+                  h('div',{onClick:e=>{e.stopPropagation();setSelPin(ann.id===selPin?null:ann.id);},style:{width:24,height:24,borderRadius:'50%',background:'rgba(24,95,165,.92)',border:'2px solid #fff',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:'#fff',cursor:'pointer',boxShadow:'0 2px 8px rgba(0,0,0,.6)'}},i+1),
                   selPin===ann.id&&h('div',{style:{position:'absolute',left:'115%',top:'50%',transform:'translateY(-50%)',background:'#0f172a',border:'.5px solid #334155',borderRadius:8,padding:10,minWidth:190,zIndex:20}},
-                    h('input',{style:{width:'100%',border:'.5px solid #334155',borderRadius:4,padding:'4px 6px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:11,marginBottom:5,outline:'none'},
-                      placeholder:'Label',value:ann.label,onChange:e=>setAnnotations(a=>a.map(x=>x.id===ann.id?{...x,label:e.target.value}:x))}),
-                    h('input',{style:{width:'100%',border:'.5px solid #334155',borderRadius:4,padding:'4px 6px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:11,marginBottom:6,outline:'none'},
-                      placeholder:'Note',value:ann.note,onChange:e=>setAnnotations(a=>a.map(x=>x.id===ann.id?{...x,note:e.target.value}:x))}),
-                    h('button',{onClick:()=>{setAnnotations(a=>a.filter(x=>x.id!==ann.id));setSelPin(null);},
-                      style:{fontSize:10,color:'#f87171',background:'none',border:'none',cursor:'pointer'}},'Remove marker')
+                    h('input',{style:{width:'100%',border:'.5px solid #334155',borderRadius:4,padding:'4px 6px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:11,marginBottom:5,outline:'none'},placeholder:'Label',value:ann.label,onChange:e=>setAnnotations(a=>a.map(x=>x.id===ann.id?{...x,label:e.target.value}:x))}),
+                    h('input',{style:{width:'100%',border:'.5px solid #334155',borderRadius:4,padding:'4px 6px',background:'rgba(255,255,255,.04)',color:'#e2e8f0',fontSize:11,marginBottom:6,outline:'none'},placeholder:'Note',value:ann.note,onChange:e=>setAnnotations(a=>a.map(x=>x.id===ann.id?{...x,note:e.target.value}:x))}),
+                    h('button',{onClick:()=>{setAnnotations(a=>a.filter(x=>x.id!==ann.id));setSelPin(null);},style:{fontSize:10,color:'#f87171',background:'none',border:'none',cursor:'pointer'}},'Remove')
                   )
                 ))
               ),
-              !planData&&h('div',{style:{padding:32,textAlign:'center',color:'#475569',border:'.5px dashed #334155',borderRadius:8,fontSize:12,lineHeight:1.8}},
-                'Upload a plan, image or CAD export\nClick anywhere to place numbered location markers')
+              !planData&&h('div',{style:{padding:32,textAlign:'center',color:'#475569',border:'.5px dashed #334155',borderRadius:8,fontSize:12}},'Upload a plan, image or CAD export \u2014 click anywhere to place numbered markers')
             )
           )
         ),
-
         h('div',{className:'modal-footer'},
           isEdit&&!isTech&&h('button',{className:'btn btn-danger',onClick:async()=>{if(!confirm('Delete?'))return;await sb.from('assemblies').delete().eq('id',assembly.id);refetch();onClose();}},'Delete'),
           h('div',{style:{flex:1}}),
-          savedId&&h('button',{onClick:()=>{
-            const conds=parts.filter(p=>p.part_type==='wire_conductor');const kos=parts.filter(p=>p.part_type==='knockout');const devs=parts.filter(p=>p.part_type==='device');const covs=parts.filter(p=>p.part_type==='cover');const mats=parts.filter(p=>p.part_type==='material');
-            const totFt=conds.reduce((s,p)=>s+(parseFloat(p.footage)||0),0);
-            const grps={};conds.forEach(c=>{const k=(c.gauge||'?')+'|'+(c.wire_color||'?')+'|'+(c.insulation_type||'?');if(!grps[k])grps[k]={gauge:c.gauge,color:c.wire_color,ins:c.insulation_type,hex:c.color_hex||'#888',count:0,ft:0};grps[k].count++;grps[k].ft+=(parseFloat(c.footage)||0);});
-            const sR=Object.values(grps).map(g=>'<tr><td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:'+g.hex+';display:inline-block"></span>'+g.color+'</span></td><td>'+g.gauge+'</td><td>'+g.ins+'</td><td>'+g.count+'</td><td style="font-weight:700">'+( g.ft>0?g.ft+" ft":'--')+'</td></tr>').join('');
-            const cR=conds.map(c=>'<tr><td>'+c.name+'</td><td>'+c.gauge+'</td><td>'+c.insulation_type+'</td><td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:'+(c.color_hex||'#888')+';display:inline-block"></span>'+(c.wire_color||'')+'</span></td><td>'+(c.footage?c.footage+"'":'--')+'</td></tr>').join('');
-            const koR=kos.map(k=>'<tr><td>'+k.knockout_position+'</td><td>'+(k.connector_type||'--')+'</td></tr>').join('');
-            const dvR=[...devs,...covs].map(d=>'<tr><td>'+(d.device_type||d.cover_type||d.name)+'</td><td>'+(d.part_type==='device'?'Device':'Cover/Ring')+'</td></tr>').join('');
-            const mR=mats.map(m=>'<tr><td>'+m.name+'</td><td>'+(m.quantity||1)+' '+(m.unit||'ea')+'</td><td>'+(m.unit_cost?'$'+parseFloat(m.unit_cost).toFixed(2):'--')+'</td></tr>').join('');
-            const typ=asmType==='wire_spool'?'Wire Spool':asmType==='wall_box'?'Wall Box':asmType;
-            const w=window.open('','_blank');
-            w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+name+'</title><style>body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:24px;max-width:820px;margin:0 auto}h1{font-size:20px;margin:0 0 2px}h2{font-size:11px;font-weight:700;margin:18px 0 5px;border-bottom:2px solid #222;padding-bottom:2px;text-transform:uppercase;letter-spacing:.07em}table{width:100%;border-collapse:collapse}th{text-align:left;border-bottom:2px solid #333;padding:4px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}td{padding:5px 8px;border-bottom:1px solid #eee}tr:nth-child(even) td{background:#f8f8f8}.meta{color:#555;font-size:11px;margin:4px 0 18px}.badge{display:inline-block;padding:2px 8px;border-radius:3px;font-weight:700;font-size:10px;text-transform:uppercase}.wire{background:#dbeafe;color:#1e3a8a}.box{background:#d1fae5;color:#064e3b}.custom{background:#f3f4f6;color:#374151}@media print{.np{display:none}}</style></head><body>');
-            w.document.write('<div class="np" style="margin-bottom:16px"><button onclick="window.print()" style="padding:7px 18px;border:1.5px solid #333;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600">Print / Save PDF</button></div>');
-            w.document.write('<h1>'+name+'</h1><div class="meta"><span class="badge '+(asmType==='wire_spool'?'wire':asmType==='wall_box'?'box':'custom')+'">'+typ+'</span>'+(desc?' &mdash; '+desc:'')+' &nbsp;&nbsp; '+new Date().toLocaleDateString()+'</div>');
-            if(conds.length){w.document.write('<h2>Wire Summary &mdash; '+conds.length+' conductors &middot; '+totFt+' ft total</h2><table><thead><tr><th>Color</th><th>Gauge</th><th>Insulation</th><th>Count</th><th>Total Footage</th></tr></thead><tbody>'+sR+'</tbody></table>');w.document.write('<h2 style="color:#888;font-weight:400;border:none;margin-top:4px">Individual conductors</h2><table><thead><tr><th>Name</th><th>Gauge</th><th>Insulation</th><th>Color</th><th>Footage</th></tr></thead><tbody>'+cR+'</tbody></table>');}
-            if(kos.length)w.document.write('<h2>Knockouts ('+kos.length+')</h2><table><thead><tr><th>Position</th><th>Connector</th></tr></thead><tbody>'+koR+'</tbody></table>');
-            if(devs.length+covs.length)w.document.write('<h2>Devices &amp; Covers</h2><table><thead><tr><th>Item</th><th>Type</th></tr></thead><tbody>'+dvR+'</tbody></table>');
-            if(mats.length)w.document.write('<h2>Components</h2><table><thead><tr><th>Name</th><th>Qty</th><th>Cost</th></tr></thead><tbody>'+mR+'</tbody></table>');
-            w.document.write('</body></html>');w.document.close();
-          },style:{display:'flex',alignItems:'center',gap:6,padding:'6px 14px',borderRadius:6,border:'.5px solid #334155',background:'transparent',color:'#94a3b8',fontSize:12,cursor:'pointer'}},'Print Sheet'),
+          savedId&&h('button',{onClick:printSheet,style:{display:'flex',alignItems:'center',gap:6,padding:'6px 14px',borderRadius:6,border:'.5px solid #334155',background:'transparent',color:'#94a3b8',fontSize:12,cursor:'pointer'}},'\uD83D\uDDA8\uFE0F Print Sheet'),
           h('button',{className:'btn btn-ghost',onClick:onClose},'Close'),
           savedId&&!isTech&&h('button',{className:'btn btn-primary',onClick:saveAssembly,disabled:saving},saving?'Saving...':'Save Changes')
         )
@@ -13687,6 +13867,7 @@ function Assemblies({isTech=false}){
     );
   }
 
+  // Library grid
   return h('div',{className:'page'},
     h('div',{className:'page-header'},
       h('div',null,h('h2',null,'Assemblies'),h('p',null,(assemblies||[]).length+' in library')),
@@ -13702,16 +13883,12 @@ function Assemblies({isTech=false}){
           !isTech&&h('button',{className:'btn btn-primary',onClick:()=>setModal({})},h(IPlus),' Create First Assembly')
         )
       :h('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:12}},
-          filtered.map(a=>{
-            const isW=a.assembly_type==='wire_spool';const isB=a.assembly_type==='wall_box';
-            return h('div',{key:a.id,className:'card',style:{padding:16,cursor:'pointer',borderLeft:isW?'2px solid rgba(24,95,165,.6)':isB?'2px solid rgba(15,110,86,.6)':'2px solid #334155'},onClick:()=>setModal(a)},
+          filtered.map(a=>{const iW=a.assembly_type==='wire_spool';const iB=a.assembly_type==='wall_box';
+            return h('div',{key:a.id,className:'card',style:{padding:16,cursor:'pointer',borderLeft:iW?'2px solid rgba(24,95,165,.6)':iB?'2px solid rgba(15,110,86,.6)':'2px solid #334155'},onClick:()=>setModal(a)},
               h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}},
                 h('div',null,
-                  h('div',{style:{fontWeight:600,fontSize:14,color:'#e2e8f0',marginBottom:5}},a.name),
-                  h('span',{style:{padding:'2px 8px',borderRadius:4,fontSize:11,
-                    background:isW?'rgba(24,95,165,.15)':isB?'rgba(15,110,86,.15)':'rgba(255,255,255,.06)',
-                    border:isW?'.5px solid rgba(24,95,165,.4)':isB?'.5px solid rgba(15,110,86,.4)':'.5px solid #334155',
-                    color:isW?'#93c5fd':isB?'#6ee7b7':'#94a3b8'}},isW?'Wire Spool':isB?'Wall Box':a.assembly_type)
+                  h('div',{style:{fontWeight:600,fontSize:14,color:'#e2e8f0',marginBottom:4}},a.name),
+                  h('span',{style:{padding:'2px 8px',borderRadius:4,fontSize:11,background:iW?'rgba(24,95,165,.15)':iB?'rgba(15,110,86,.15)':'rgba(255,255,255,.06)',border:iW?'.5px solid rgba(24,95,165,.4)':iB?'.5px solid rgba(15,110,86,.4)':'.5px solid #334155',color:iW?'#93c5fd':iB?'#6ee7b7':'#94a3b8'}},iW?'Wire Spool':iB?'Wall Box':a.assembly_type)
                 ),
                 h('button',{className:'btn-icon',onClick:e=>{e.stopPropagation();setModal(a);}},h(IEdit))
               ),
@@ -13794,6 +13971,7 @@ function App(){
 
 const{createElement:h,useState,useEffect,useCallback,useRef,Fragment}=React;
 ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+
 
 
 
