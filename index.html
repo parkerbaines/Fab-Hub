@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>ShopWorx1 Fab</title>
@@ -16,6 +18,8 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin></script>
 <style>
+
+
 
 
 
@@ -314,7 +318,11 @@ body.light [style*="rgba(245,158,11,.15)"],body.light [style*="rgba(245,158,11, 
 body.light [style*="rgba(59,126,255,.1)"],body.light [style*="rgba(59,126,255, .1)"]{background:rgba(29,78,216,.08)!important}
 body.light [style*="rgba(59,126,255,.2)"],body.light [style*="rgba(59,126,255, .2)"]{background:rgba(29,78,216,.1)!important}
 body.light [style*="rgba(107,122,159,.1)"],body.light [style*="rgba(107,122,159, .1)"]{background:rgba(74,85,104,.08)!important}
+
+
 </style>
+
+
 </head>
 <body>
 <div id="root"></div>
@@ -541,26 +549,26 @@ function Dashboard({setPage,isTech=false,isAdmin=true}){
       h(IAlert),' ',urgentWOs.length+' urgent work order'+(urgentWOs.length>1?'s':'')+' open'
     ),
 
-    h('div',{className:'grid4',style:{marginBottom:16}},
-      h('div',{className:'stat-card',onClick:()=>setPage('workorders'),style:{cursor:'pointer'}},
-        h('div',{className:'stat-label'},'Open Work Orders'),
-        h('div',{className:'stat-value'},openWOs.length),
-        h('div',{className:'stat-sub'},'Active & in progress')
+    h('div',{className:'metrics',style:{marginBottom:16}},
+      h('div',{className:'metric',onClick:()=>setPage('workorders'),style:{cursor:'pointer'}},
+        h('div',{className:'metric-label'},'Open Work Orders'),
+        h('div',{className:'metric-value'},openWOs.length),
+        h('div',{className:'metric-sub'},'Active & in progress')
       ),
-      h('div',{className:'stat-card',onClick:()=>setPage('jobs'),style:{cursor:'pointer'}},
-        h('div',{className:'stat-label'},'Active Jobs'),
-        h('div',{className:'stat-value'},activeJobs.length),
-        h('div',{className:'stat-sub'},'In progress')
+      h('div',{className:'metric',onClick:()=>setPage('jobs'),style:{cursor:'pointer'}},
+        h('div',{className:'metric-label'},'Active Jobs'),
+        h('div',{className:'metric-value'},activeJobs.length),
+        h('div',{className:'metric-sub'},'In progress')
       ),
-      h('div',{className:'stat-card'},
-        h('div',{className:'stat-label'},"Today's Hours"),
-        h('div',{className:'stat-value'},hoursToday.toFixed(1)),
-        h('div',{className:'stat-sub'},'Labor logged today')
+      h('div',{className:'metric'},
+        h('div',{className:'metric-label'},"Today's Hours"),
+        h('div',{className:'metric-value'},hoursToday.toFixed(1)),
+        h('div',{className:'metric-sub'},'Labor logged today')
       ),
-      h('div',{className:'stat-card',onClick:()=>setPage('materials'),style:{cursor:'pointer'}},
-        h('div',{className:'stat-label'},'Materials Low / Out'),
-        h('div',{className:'stat-value'},lowMats.length),
-        h('div',{className:'stat-sub'},lowMats.length>0?h('span',{style:{color:'#f59e0b'}},lowMats.length+' below reorder'):'All stocked')
+      h('div',{className:'metric',onClick:()=>setPage('materials'),style:{cursor:'pointer'}},
+        h('div',{className:'metric-label'},'Materials Low / Out'),
+        h('div',{className:'metric-value'},lowMats.length),
+        h('div',{className:'metric-sub'},lowMats.length>0?h('span',{style:{color:'#f59e0b'}},lowMats.length+' below reorder'):'All stocked')
       )
     ),
 
@@ -660,7 +668,7 @@ function Jobs({setPage,isTech=false}){
       h('div',{className:'modal-header'},h('h3',null,isEdit?'Edit Job':'New Job'),h('button',{className:'icon-btn',onClick:onClose},h(IPlus,{style:{transform:'rotate(45deg)'}}))),
       h('div',{className:'modal-body'},
         err&&h('div',{className:'alert alert-danger',style:{marginBottom:12}},err),
-        h('div',{className:'form-grid2'},
+        h('div',{className:'form-grid form-grid-2'},
           h('div',{className:'form-group',style:{gridColumn:'1/-1'}},h('label',{className:'form-label'},'Job Name *'),h('input',{className:'form-input',value:f.name,onChange:e=>s('name',e.target.value)})),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Client'),h('input',{className:'form-input',value:f.client,onChange:e=>s('client',e.target.value)})),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Contract #'),h('input',{className:'form-input',value:f.contract_number,onChange:e=>s('contract_number',e.target.value)})),
@@ -751,7 +759,7 @@ function Workers({isTech=false}){
       h('div',{className:'modal-header'},h('h3',null,isEdit?'Edit Worker':'New Worker'),h('button',{className:'icon-btn',onClick:onClose},h(IPlus,{style:{transform:'rotate(45deg)'}}))),
       h('div',{className:'modal-body'},
         err&&h('div',{className:'alert alert-danger',style:{marginBottom:12}},err),
-        h('div',{className:'form-grid2'},
+        h('div',{className:'form-grid form-grid-2'},
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Name *'),h('input',{className:'form-input',value:f.name,onChange:e=>s('name',e.target.value)})),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Trade'),h('select',{className:'form-select',value:f.trade,onChange:e=>s('trade',e.target.value)},h('option',{value:''},'— Select trade —'),TRADES.map(t=>h('option',{key:t,value:t},t.charAt(0).toUpperCase()+t.slice(1))))),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Email'),h('input',{className:'form-input',type:'email',value:f.email,onChange:e=>s('email',e.target.value)})),
@@ -834,7 +842,7 @@ function Materials({isTech=false}){
       h('div',{className:'modal-header'},h('h3',null,isEdit?'Edit Material':'New Material'),h('button',{className:'icon-btn',onClick:onClose},h(IPlus,{style:{transform:'rotate(45deg)'}}))),
       h('div',{className:'modal-body'},
         err&&h('div',{className:'alert alert-danger',style:{marginBottom:12}},err),
-        h('div',{className:'form-grid2'},
+        h('div',{className:'form-grid form-grid-2'},
           h('div',{className:'form-group',style:{gridColumn:'1/-1'}},h('label',{className:'form-label'},'Name *'),h('input',{className:'form-input',value:f.name,onChange:e=>s('name',e.target.value)})),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Category'),h('select',{className:'form-select',value:f.category,onChange:e=>s('category',e.target.value)},h('option',{value:''},'— Select —'),MAT_CATEGORIES.map(c=>h('option',{key:c,value:c},c.charAt(0).toUpperCase()+c.slice(1))))),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Unit'),h('select',{className:'form-select',value:f.unit,onChange:e=>s('unit',e.target.value)},MAT_UNITS.map(u=>h('option',{key:u,value:u},u)))),
@@ -1034,7 +1042,7 @@ function WOForm({id,setPage,isAdmin=true,isTech=false,myWorkerId=null}){
     activeTab==='info'&&h('div',{className:'wo-page'},
       h('div',{className:'wo-section'},
         h('div',{className:'wo-section-title'},'Work Order Details'),
-        h('div',{className:'form-grid2'},
+        h('div',{className:'form-grid form-grid-2'},
           h('div',{className:'form-group',style:{gridColumn:'1/-1'}},h('label',{className:'form-label'},'Title *'),h('input',{className:'form-input',value:f.title,onChange:e=>s('title',e.target.value),disabled:isTech})),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Status'),h('select',{className:'form-select',value:f.status,onChange:e=>s('status',e.target.value)},['open','in_progress','on_hold','completed','cancelled'].map(st=>h('option',{key:st,value:st},statusLabel[st])))),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Priority'),h('select',{className:'form-select',value:f.priority,onChange:e=>s('priority',e.target.value),disabled:isTech},[{v:'urgent',l:'Urgent'},{v:'high',l:'High'},{v:'normal',l:'Normal'},{v:'low',l:'Low'}].map(({v,l})=>h('option',{key:v,value:v},l)))),
@@ -1052,9 +1060,9 @@ function WOForm({id,setPage,isAdmin=true,isTech=false,myWorkerId=null}){
       isEdit&&h('div',{className:'wo-section'},
         h('div',{className:'wo-section-title'},'Summary'),
         h('div',{style:{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12}},
-          h('div',{className:'stat-card'},h('div',{className:'stat-label'},'Total Hours'),h('div',{className:'stat-value',style:{fontSize:22}},totalHours.toFixed(1))),
-          h('div',{className:'stat-card'},h('div',{className:'stat-label'},'Labor Cost'),h('div',{className:'stat-value',style:{fontSize:22}},totalLaborCost>0?'$'+totalLaborCost.toFixed(2):'—')),
-          h('div',{className:'stat-card'},h('div',{className:'stat-label'},'Material Cost'),h('div',{className:'stat-value',style:{fontSize:22}},totalMatCost>0?'$'+totalMatCost.toFixed(2):'—'))
+          h('div',{className:'metric'},h('div',{className:'metric-label'},'Total Hours'),h('div',{className:'metric-value',style:{fontSize:22}},totalHours.toFixed(1))),
+          h('div',{className:'metric'},h('div',{className:'metric-label'},'Labor Cost'),h('div',{className:'metric-value',style:{fontSize:22}},totalLaborCost>0?'$'+totalLaborCost.toFixed(2):'—')),
+          h('div',{className:'metric'},h('div',{className:'metric-label'},'Material Cost'),h('div',{className:'metric-value',style:{fontSize:22}},totalMatCost>0?'$'+totalMatCost.toFixed(2):'—'))
         )
       )
     ),
@@ -1066,7 +1074,7 @@ function WOForm({id,setPage,isAdmin=true,isTech=false,myWorkerId=null}){
           !showMatPicker&&h('button',{className:'btn btn-primary',style:{fontSize:12,padding:'5px 12px'},onClick:()=>setShowMatPicker(true)},h(IPlus),' Add Material')
         ),
         showMatPicker&&h('div',{style:{background:'rgba(255,255,255,.04)',border:'.5px solid #2a3048',borderRadius:10,padding:16,marginBottom:12}},
-          h('div',{className:'form-grid2'},
+          h('div',{className:'form-grid form-grid-2'},
             h('div',{className:'form-group'},h('label',{className:'form-label'},'Material'),h('select',{className:'form-select',value:pf.material_id,onChange:e=>{const mat=(matList||[]).find(m=>m.id===e.target.value);setPf(p=>({...p,material_id:e.target.value,unit_cost:mat?.unit_cost||p.unit_cost}));}},h('option',{value:''},'— Custom / no link —'),(matList||[]).map(m=>h('option',{key:m.id,value:m.id},m.name+' ('+m.unit+')')))),
             h('div',{className:'form-group'},h('label',{className:'form-label'},'Description'),h('input',{className:'form-input',placeholder:'Custom description',value:pf.description,onChange:e=>setPf(p=>({...p,description:e.target.value}))})),
             h('div',{className:'form-group'},h('label',{className:'form-label'},'Qty'),h('input',{className:'form-input',type:'number',step:'0.01',value:pf.quantity,onChange:e=>setPf(p=>({...p,quantity:e.target.value}))})),
@@ -1096,7 +1104,7 @@ function WOForm({id,setPage,isAdmin=true,isTech=false,myWorkerId=null}){
           !showLaborForm&&h('button',{className:'btn btn-primary',style:{fontSize:12,padding:'5px 12px'},onClick:()=>setShowLaborForm(true)},h(IPlus),' Log Hours')
         ),
         showLaborForm&&h('div',{style:{background:'rgba(255,255,255,.04)',border:'.5px solid #2a3048',borderRadius:10,padding:16,marginBottom:12}},
-          h('div',{className:'form-grid2'},
+          h('div',{className:'form-grid form-grid-2'},
             h('div',{className:'form-group'},h('label',{className:'form-label'},'Worker'),h('select',{className:'form-select',value:lf.worker_id,onChange:e=>{const w=(workers||[]).find(x=>x.id===e.target.value);setLf(p=>({...p,worker_id:e.target.value,trade:w?.trade||p.trade,hourly_rate:w?.hourly_rate||p.hourly_rate}));}},h('option',{value:''},'— Select worker —'),(workers||[]).map(w=>h('option',{key:w.id,value:w.id},w.name)))),
             h('div',{className:'form-group'},h('label',{className:'form-label'},'Trade'),h('input',{className:'form-input',value:lf.trade,onChange:e=>setLf(p=>({...p,trade:e.target.value}))})),
             h('div',{className:'form-group'},h('label',{className:'form-label'},'Hours'),h('input',{className:'form-input',type:'number',step:'0.25',value:lf.hours,onChange:e=>setLf(p=>({...p,hours:e.target.value}))})),
@@ -1225,7 +1233,7 @@ function Documents({setPage,isTech=false}){
       h('div',{className:'modal-body'},
         err&&h('div',{className:'alert alert-danger',style:{marginBottom:12}},err),
         h('div',{className:'form-group'},h('label',{className:'form-label'},'Document Name *'),h('input',{className:'form-input',value:f.name,onChange:e=>sf('name',e.target.value)})),
-        h('div',{className:'form-grid2'},
+        h('div',{className:'form-grid form-grid-2'},
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Type'),h('select',{className:'form-select',value:f.document_type_id,onChange:e=>sf('document_type_id',e.target.value)},h('option',{value:''},'— Select —'),(docTypes||[]).map(t=>h('option',{key:t.id,value:t.id},t.name)))),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Job'),h('select',{className:'form-select',value:f.job_id,onChange:e=>sf('job_id',e.target.value)},h('option',{value:''},'— No job —'),(jobs||[]).map(j=>h('option',{key:j.id,value:j.id},j.job_number+' — '+j.name))))
         ),
@@ -1330,7 +1338,7 @@ function UsersPage(){
         err&&h('div',{className:'alert alert-danger',style:{marginBottom:12}},err),
         h('div',{className:'form-group'},h('label',{className:'form-label'},'Full Name'),h('input',{className:'form-input',value:f.full_name,onChange:e=>s('full_name',e.target.value)})),
         !isEdit&&h('div',{className:'form-group'},h('label',{className:'form-label'},'Email'),h('input',{className:'form-input',type:'email',value:f.email,onChange:e=>s('email',e.target.value)})),
-        h('div',{className:'form-grid2'},
+        h('div',{className:'form-grid form-grid-2'},
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Role'),h('select',{className:'form-select',value:f.role,onChange:e=>s('role',e.target.value)},h('option',{value:'admin'},'Admin / Manager'),h('option',{value:'tech'},'Technician / Worker'))),
           h('div',{className:'form-group'},h('label',{className:'form-label'},'Status'),h('select',{className:'form-select',value:f.active?'active':'inactive',onChange:e=>s('active',e.target.value==='active')},h('option',{value:'active'},'Active'),h('option',{value:'inactive'},'Inactive')))
         ),
@@ -1499,6 +1507,8 @@ function App(){
 
 const{createElement:h,useState,useEffect,useCallback,useRef,Fragment}=React;
 ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+
+
 
 </script>
 </body>
